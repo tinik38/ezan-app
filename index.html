@@ -729,7 +729,12 @@ function compassLabel(bearing){
   const dirs = LANG==='tr'?dirsTr:dirsDe;
   return dirs[Math.floor((bearing+22.5)/45)%8];
 }
-let qiblaBearing=0, deviceHeading=null, compassActive=false;
+let qiblaBearing=0, deviceHeading=null, compassActive=false, smoothedHeading=null;
+let drawScheduled=false;
+
+function shortestAngleDiff(from, to){
+  return ((to - from + 540) % 360) - 180;
+}
 
 function drawCompass(){
   const canvas = document.getElementById('compass-canvas');
@@ -787,8 +792,23 @@ function handleOrientation(e){
   else if(e.absolute && e.alpha !== null){ heading = 360 - e.alpha; }
   else if(e.alpha !== null){ heading = 360 - e.alpha; }
   if(heading !== null){
-    deviceHeading = heading; compassActive = true;
-    updateQiblaInfo();
+    // Ham sensör verisi çok "gürültülü" (küçük titremeler bile okumayı
+    // sıçratıyor) - bu yüzden yumuşatma (exponential smoothing) uyguluyoruz;
+    // 0/360 sınırında da doğru yönde (en kısa yoldan) dönmesi için açı
+    // farkını dairesel olarak hesaplıyoruz.
+    if(smoothedHeading === null){
+      smoothedHeading = heading;
+    }else{
+      const diff = shortestAngleDiff(smoothedHeading, heading);
+      smoothedHeading = (smoothedHeading + diff * 0.12 + 360) % 360;
+    }
+    deviceHeading = smoothedHeading; compassActive = true;
+    // Her sensör olayında değil, ekran her kare yenilendiğinde çiz -
+    // gereksiz/aşırı sık yeniden çizimi (ve görsel titremeyi) önler.
+    if(!drawScheduled){
+      drawScheduled = true;
+      requestAnimationFrame(()=>{ drawScheduled=false; updateQiblaInfo(); });
+    }
   }
 }
 
