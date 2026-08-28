@@ -7,82 +7,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f2a1d">
 <title>Ezan Vakti - Frastanz</title>
-<style>
-  :root{
-    --bg:#f4f4f4; --header:#0f2a1d; --accent:#164a30; --accent2:#3a5a40;
-    --text:#222; --muted:#777; --card:#ffffff; --border:#e2e2e2;
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;height:100%;background:var(--bg);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text);}
-  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);
-    padding-bottom:90px;}
-  header{background:var(--header);color:#fff;padding:16px 18px 14px;}
-  header .date{font-size:14px;opacity:.95}
-  header .hijri{font-size:13px;color:#c9e8d4;margin-top:2px}
-  header .prophet{font-size:11px;color:#eaf5ec;margin-top:8px;line-height:1.5}
-  .next-card{background:var(--accent);color:#fff;text-align:center;padding:18px 10px;}
-  .next-card .label{font-size:12px;color:#a9d9bb;text-transform:uppercase;letter-spacing:.5px}
-  .next-card .name{font-size:26px;font-weight:700;margin:4px 0}
-  .next-card .countdown{font-size:20px;font-variant-numeric:tabular-nums}
-  .times{position:relative;padding:10px 0;}
-  .row{display:flex;justify-content:space-between;align-items:center;
-    padding:10px 18px;font-size:16px;border-bottom:1px solid var(--border);}
-  .row .name{color:#333}
-  .row .time{font-weight:700}
-  .row.active{background:#eef7f0}
-  #panel-wrap{display:flex;justify-content:center;align-items:center;
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    pointer-events:none; z-index:2;}
-  #panel-img{width:100px;height:118px;object-fit:cover;border-radius:6px;
-    box-shadow:0 2px 10px rgba(0,0,0,.25); border:2px solid #fff;}
-  section.card{background:var(--card);margin:10px 12px;border-radius:10px;
-    padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-  .cat-title{font-size:13px;font-weight:700;color:#fff;padding:6px 10px;
-    border-radius:6px;margin-bottom:6px;display:inline-block;}
-  .cat-din .cat-title{background:#0f2a1d}
-  .cat-tr .cat-title{background:#8a1c1c}
-  .cat-at .cat-title{background:#1c3d8a}
-  .cat-body{font-size:13px;color:#333;line-height:1.7;white-space:pre-line}
-  .content-title{font-size:13px;font-weight:700;color:#fff;background:#3a5a40;
-    padding:6px 10px;border-radius:6px;display:inline-block;margin-bottom:6px}
-  .content-text{font-style:italic;font-size:14px;line-height:1.5;margin-bottom:4px}
-  .content-source{font-size:11px;color:var(--muted)}
-  .disclaimer{font-size:10px;color:#aaa;margin-top:6px;line-height:1.4}
-  #status{font-size:11px;color:var(--muted);text-align:center;padding:6px 10px;}
-  .btn-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;
-    background:#fff;border-top:1px solid var(--border);display:flex;
-    padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:8px;}
-  .btn{flex:1;padding:12px 8px;border:none;border-radius:8px;font-size:14px;
-    font-weight:600;background:var(--accent);color:#fff;}
-  .btn.secondary{background:#eee;color:#333}
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;
-    align-items:flex-end;justify-content:center;z-index:50;}
-  .modal-overlay.open{display:flex;}
-  .modal{background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;
-    padding:18px;max-height:86vh;overflow-y:auto;}
-  .modal h2{margin:0 0 12px;font-size:17px;}
-  .modal label{display:block;font-size:12px;color:#555;margin:10px 0 4px;}
-  .modal input[type=text],.modal input[type=number]{width:100%;padding:8px;
-    border:1px solid #ccc;border-radius:6px;font-size:14px;}
-  .modal .row-inline{display:flex;gap:10px;}
-  .modal .row-inline > div{flex:1;}
-  .modal-close{display:block;width:100%;margin-top:16px;padding:12px;
-    background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:15px;}
-  .lang-toggle{display:flex;gap:8px;margin-top:6px;}
-  .lang-toggle button{flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;
-    background:#f7f7f7;font-size:13px;}
-  .lang-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-  #compass-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
-  #compass-canvas{width:260px;height:260px;}
-  .qibla-info{text-align:center;font-size:15px;font-weight:700;margin:8px 0 2px;}
-  .qibla-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:10px;}
-  .qibla-note{font-size:11px;color:#888;line-height:1.5;margin-top:10px;}
-  .perm-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;
-    border-radius:8px;font-size:14px;margin-bottom:10px;}
-  .install-hint{font-size:11px;color:#999;text-align:center;margin-top:6px;}
-</style>
+
 </head>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
 <body>
 <div id="app">
   <header>
