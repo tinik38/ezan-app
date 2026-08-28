@@ -96,23 +96,38 @@
     <label id="reminder-label">Vakitten kaç dakika önce hatırlatsın?</label>
     <input type="number" id="reminder-input" value="10" min="0" max="60">
 
-    <div class="row-inline">
-      <div>
-        <label id="lat-label">Enlem</label>
-        <input type="text" id="lat-input" value="47.2333">
-      </div>
-      <div>
-        <label id="lon-label">Boylam</label>
-        <input type="text" id="lon-input" value="9.6667">
-      </div>
-    </div>
+    <div class="vakit-container">
+  <div class="vakit-kutu">
+    <h2>İmsak</h2>
+    <p id="imsak"></p>
+  </div>
 
-    <button class="perm-btn" id="notif-perm-btn" style="margin-top:14px;">🔔 Bildirimleri Etkinleştir</button>
-    <div class="qibla-note" id="notif-note"></div>
+  <div class="vakit-kutu">
+    <h2>Güneş</h2>
+    <p id="gunes"></p>
+  </div>
 
-    <button class="modal-close" onclick="saveSettings()">Kaydet</button>
+  <div class="vakit-kutu">
+    <h2>Öğle</h2>
+    <p id="ogle"></p>
+  </div>
+
+  <div class="vakit-kutu">
+    <h2>İkindi</h2>
+    <p id="ikindi"></p>
+  </div>
+
+  <div class="vakit-kutu">
+    <h2>Akşam</h2>
+    <p id="aksam"></p>
+  </div>
+
+  <div class="vakit-kutu">
+    <h2>Yatsı</h2>
+    <p id="yatsi"></p>
   </div>
 </div>
+
 
 <script>
 /* ======================= i18n ======================= */
