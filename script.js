@@ -1,42 +1,83 @@
-<div class="next-card">
-  <div class="label" id="next-label">SIRADAKİ VAKİT</div>
-  <div class="name" id="next-name">-</div>
-  <div class="countdown" id="next-countdown">--:--:--</div>
-</div>
+// ======================= Frastanz Koordinatları =======================
+const LAT = 47.218; 
+const LON = 9.634;
 
-<div class="settings">
-  <label>Şehir:</label>
-  <input id="city" value="Frastanz">
+// ======================= Vakitleri Yükle =======================
+async function loadTimings() {
+  try {
+    const url = `https://api.aladhan.com/v1/timings?latitude=${LAT}&longitude=${LON}&method=13`;
 
-  <label>Ülke:</label>
-  <input id="country" value="Austria">
+    const response = await fetch(url);
+    const data = await response.json();
+    const t = data.data.timings;
 
-  <button id="loadBtn">Vakitleri Yükle</button>
-</div>
+    // Vakit kutularını doldur
+    document.getElementById("imsak").innerText = t.Imsak;
+    document.getElementById("gunes").innerText = t.Sunrise;
+    document.getElementById("ogle").innerText = t.Dhuhr;
+    document.getElementById("ikindi").innerText = t.Asr;
+    document.getElementById("aksam").innerText = t.Maghrib;
+    document.getElementById("yatsi").innerText = t.Isha;
 
-<div class="vakit-container">
-  <div class="vakit-kutu">
-    <h2>İmsak</h2>
-    <p id="imsak"></p>
-  </div>
-  <div class="vakit-kutu">
-    <h2>Güneş</h2>
-    <p id="gunes"></p>
-  </div>
-  <div class="vakit-kutu">
-    <h2>Öğle</h2>
-    <p id="ogle"></p>
-  </div>
-  <div class="vakit-kutu">
-    <h2>İkindi</h2>
-    <p id="ikindi"></p>
-  </div>
-  <div class="vakit-kutu">
-    <h2>Akşam</h2>
-    <p id="aksam"></p>
-  </div>
-  <div class="vakit-kutu">
-    <h2>Yatsı</h2>
-    <p id="yatsi"></p>
-  </div>
-</div>
+    // Sıradaki vakti hesapla
+    updateNextPrayer(t);
+
+  } catch (err) {
+    console.error("Vakitler alınamadı:", err);
+  }
+}
+
+// ======================= Sıradaki Vakit =======================
+function updateNextPrayer(timings) {
+  const order = [
+    { key: "Imsak", label: "İmsak" },
+    { key: "Sunrise", label: "Güneş" },
+    { key: "Dhuhr", label: "Öğle" },
+    { key: "Asr", label: "İkindi" },
+    { key: "Maghrib", label: "Akşam" },
+    { key: "Isha", label: "Yatsı" }
+  ];
+
+  const now = new Date();
+  const today = now.toISOString().split("T")[0];
+
+  let next = null;
+
+  for (let p of order) {
+    const timeStr = timings[p.key];
+    const prayerTime = new Date(`${today} ${timeStr}`);
+
+    if (prayerTime > now) {
+      next = { name: p.label, time: prayerTime };
+      break;
+    }
+  }
+
+  if (!next) {
+    document.getElementById("next-name").innerText = "Yarın İmsak";
+    document.getElementById("next-countdown").innerText = "--:--:--";
+    return;
+  }
+
+  document.getElementById("next-name").innerText = next.name;
+
+  // Geri sayım
+  setInterval(() => {
+    const now2 = new Date();
+    const diff = next.time - now2;
+
+    if (diff <= 0) {
+      document.getElementById("next-countdown").innerText = "Vakit girdi";
+      return;
+    }
+
+    const h = String(Math.floor(diff / 1000 / 3600)).padStart(2, "0");
+    const m = String(Math.floor(diff / 1000 / 60) % 60).padStart(2, "0");
+    const s = String(Math.floor(diff / 1000) % 60).padStart(2, "0");
+
+    document.getElementById("next-countdown").innerText = `${h}:${m}:${s}`;
+  }, 1000);
+}
+
+// ======================= Sayfa Açılınca =======================
+loadTimings();
