@@ -1,26 +1,42 @@
-function loadTimings() {
-  const city = document.getElementById("city").value;
-  const country = document.getElementById("country").value;
+<div class="next-card">
+  <div class="label" id="next-label">SIRADAKİ VAKİT</div>
+  <div class="name" id="next-name">-</div>
+  <div class="countdown" id="next-countdown">--:--:--</div>
+</div>
 
-  const url = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}`;
+<div class="settings">
+  <label>Şehir:</label>
+  <input id="city" value="Frastanz">
 
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      const t = data.data.timings;
+  <label>Ülke:</label>
+  <input id="country" value="Austria">
 
-      // Yeni kutulara yaz
-      document.getElementById("imsak").innerText = t.Imsak;
-      document.getElementById("gunes").innerText = t.Sunrise;
-      document.getElementById("ogle").innerText = t.Dhuhr;
-      document.getElementById("ikindi").innerText = t.Asr;
-      document.getElementById("aksam").innerText = t.Maghrib;
-      document.getElementById("yatsi").innerText = t.Isha;
-    })
-    .catch(err => {
-      console.error(err);
-    });
-}
+  <button id="loadBtn">Vakitleri Yükle</button>
+</div>
 
-document.getElementById("loadBtn").addEventListener("click", loadTimings);
-loadTimings();
+<div class="vakit-container">
+  <div class="vakit-kutu">
+    <h2>İmsak</h2>
+    <p id="imsak"></p>
+  </div>
+  <div class="vakit-kutu">
+    <h2>Güneş</h2>
+    <p id="gunes"></p>
+  </div>
+  <div class="vakit-kutu">
+    <h2>Öğle</h2>
+    <p id="ogle"></p>
+  </div>
+  <div class="vakit-kutu">
+    <h2>İkindi</h2>
+    <p id="ikindi"></p>
+  </div>
+  <div class="vakit-kutu">
+    <h2>Akşam</h2>
+    <p id="aksam"></p>
+  </div>
+  <div class="vakit-kutu">
+    <h2>Yatsı</h2>
+    <p id="yatsi"></p>
+  </div>
+</div>
