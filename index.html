@@ -8,55 +8,59 @@
 <meta name="theme-color" content="#0f2a1d">
 <title>Ezan Vakti - Frastanz</title>
 
+<link rel="stylesheet" href="style.css">
 </head>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
+
 <body>
 <div id="app">
-  <header>
-    <div class="date" id="date-line">-</div>
-    <div class="hijri" id="hijri-line">-</div>
-    <div class="prophet" id="prophet-line"></div>
-  </header>
 
   <div class="next-card">
-   <div class="vakit-container">
-
-  <div class="vakit-kutu">
-    <h2>İmsak</h2>
-    <p id="imsak"></p>
+    <div class="label" id="next-label">SIRADAKİ VAKİT</div>
+    <div class="name" id="next-name">-</div>
+    <div class="countdown" id="next-countdown">--:--:--</div>
   </div>
 
-  <div class="vakit-kutu">
-    <h2>Güneş</h2>
-    <p id="gunes"></p>
+  <div class="vakit-container">
+
+    <div class="vakit-kutu">
+      <h2>İmsak</h2>
+      <p id="imsak"></p>
+    </div>
+
+    <div class="vakit-kutu">
+      <h2>Güneş</h2>
+      <p id="gunes"></p>
+    </div>
+
+    <div class="vakit-kutu">
+      <h2>Öğle</h2>
+      <p id="ogle"></p>
+    </div>
+
+    <div class="vakit-kutu">
+      <h2>İkindi</h2>
+      <p id="ikindi"></p>
+    </div>
+
+    <div class="vakit-kutu">
+      <h2>Akşam</h2>
+      <p id="aksam"></p>
+    </div>
+
+    <div class="vakit-kutu">
+      <h2>Yatsı</h2>
+      <p id="yatsi"></p>
+    </div>
+
   </div>
 
-  <div class="vakit-kutu">
-    <h2>Öğle</h2>
-    <p id="ogle"></p>
-  </div>
+</div> <!-- app kapanışı -->
 
-  <div class="vakit-kutu">
-    <h2>İkindi</h2>
-    <p id="ikindi"></p>
-  </div>
-
-  <div class="vakit-kutu">
-    <h2>Akşam</h2>
-    <p id="aksam"></p>
-  </div>
-
-  <div class="vakit-kutu">
-    <h2>Yatsı</h2>
-    <p id="yatsi"></p>
-  </div>
-
-</div>
+<script src="script.js"></script>
+</body>
+</html>
 
 
-
-<script>
 /* ======================= i18n ======================= */
 const I18N = {
   tr: {
