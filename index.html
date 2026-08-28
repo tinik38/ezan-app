@@ -353,8 +353,16 @@ async function loadTimes(force){
   renderAll();
 }
 
+function pad2(n){ return String(n).padStart(2,'0'); }
+function formatDateKey(date){
+  // Diyanet formatı ile birebir aynı: DD.MM.YYYY (sıfırlı, iki haneli).
+  // toLocaleDateString() bazı telefon/tarayıcılarda tek haneli gün/ay
+  // üretebiliyor (ör. "28.8.2026"), bu da eşleşmeyi bozup vakitlerin
+  // boş görünmesine sebep oluyordu - bu yüzden burada elle biçimlendiriyoruz.
+  return `${pad2(date.getDate())}.${pad2(date.getMonth()+1)}.${date.getFullYear()}`;
+}
 function findRecordForDate(records, date){
-  const target = date.toLocaleDateString('de-DE'); // DD.MM.YYYY
+  const target = formatDateKey(date);
   return records.find(r => (r.MiladiTarihKisa||'').trim() === target);
 }
 
@@ -374,7 +382,7 @@ function renderAll(){
 
   const now = new Date();
   document.getElementById('date-line').textContent =
-    now.toLocaleDateString('de-DE') + ' - ' + t.weekdays[(now.getDay()+6)%7];
+    formatDateKey(now) + ' - ' + t.weekdays[(now.getDay()+6)%7];
 
   const today = findRecordForDate(STATE.records, now);
   const tomorrow = findRecordForDate(STATE.records, new Date(now.getTime()+86400000));
