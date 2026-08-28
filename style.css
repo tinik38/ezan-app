@@ -33,3 +33,10 @@ h1 {
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
   text-align: left;
 }
+.vakitler {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    padding: 15px 25px;
+    display: inline-block;
+}
