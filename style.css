@@ -39,3 +39,20 @@ h1 {
     padding: 15px 25px;
     display: inline-block;
 }
+.vakit-kutu {
+    background: white;
+    padding: 15px;
+    margin: 10px auto;
+    width: 250px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.vakit-kutu h2 {
+    margin: 0;
+    color: #333;
+}
+.vakit-kutu p {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 5px 0 0;
+}
