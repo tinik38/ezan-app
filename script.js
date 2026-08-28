@@ -1,3 +1,4 @@
+// update
 // ======================= Frastanz Koordinatları =======================
 const LAT = 47.218; 
 const LON = 9.634;
