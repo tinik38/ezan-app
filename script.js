@@ -83,3 +83,4 @@ function updateNextPrayer(timings) {
 // ======================= Sayfa Açılınca =======================
 loadTimings();
 // update
+// update
