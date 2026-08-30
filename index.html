@@ -1,96 +1,99 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0f2a1d">
-<title>Ezan Vakti - Frastanz</title>
-<style>
-  :root{
-    --bg:#f4f4f4; --header:#0f2a1d; --accent:#164a30; --accent2:#3a5a40;
-    --text:#222; --muted:#777; --card:#ffffff; --border:#e2e2e2;
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;height:100%;background:var(--bg);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text);}
-  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);
-    padding-bottom:90px;}
-  header{background:var(--header);color:#fff;padding:16px 18px 14px;}
-  header .date{font-size:14px;opacity:.95}
-  header .hijri{font-size:13px;color:#c9e8d4;margin-top:2px}
-  header .prophet{font-size:11px;color:#eaf5ec;margin-top:8px;line-height:1.5}
-  .next-card{background:var(--accent);color:#fff;text-align:center;padding:18px 10px;}
-  .next-card .label{font-size:12px;color:#a9d9bb;text-transform:uppercase;letter-spacing:.5px}
-  .next-card .name{font-size:26px;font-weight:700;margin:4px 0}
-  .next-card .countdown{font-size:20px;font-variant-numeric:tabular-nums}
-  .times{position:relative;padding:10px 0;}
-  .row{display:flex;justify-content:space-between;align-items:center;
-    padding:10px 18px;font-size:16px;border-bottom:1px solid var(--border);}
-  .row .name{color:#333}
-  .row .time{font-weight:700}
-  .row.active{background:#eef7f0}
-  #panel-wrap{display:flex;justify-content:center;align-items:center;
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    pointer-events:none; z-index:2;}
-  #panel-img{width:100px;height:118px;object-fit:cover;border-radius:6px;
-    box-shadow:0 2px 10px rgba(0,0,0,.25); border:2px solid #fff;}
-  section.card{background:var(--card);margin:10px 12px;border-radius:10px;
-    padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-  .cat-title{font-size:13px;font-weight:700;color:#fff;padding:6px 10px;
-    border-radius:6px;margin-bottom:6px;display:inline-block;}
-  .cat-din .cat-title{background:#0f2a1d}
-  .cat-tr .cat-title{background:#8a1c1c}
-  .cat-at .cat-title{background:#1c3d8a}
-  .cat-body{font-size:13px;color:#333;line-height:1.7;white-space:pre-line}
-  .content-title{font-size:13px;font-weight:700;color:#fff;background:#3a5a40;
-    padding:6px 10px;border-radius:6px;display:inline-block;margin-bottom:6px}
-  .content-text{font-style:italic;font-size:14px;line-height:1.5;margin-bottom:4px}
-  .content-source{font-size:11px;color:var(--muted)}
-  .disclaimer{font-size:10px;color:#aaa;margin-top:6px;line-height:1.4}
-  #status{font-size:11px;color:var(--muted);text-align:center;padding:6px 10px;}
-  .btn-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;
-    background:#fff;border-top:1px solid var(--border);display:flex;
-    padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:8px;}
-  .btn{flex:1;padding:12px 8px;border:none;border-radius:8px;font-size:14px;
-    font-weight:600;background:var(--accent);color:#fff;}
-  .btn.secondary{background:#eee;color:#333}
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;
-    align-items:flex-end;justify-content:center;z-index:50;}
-  .modal-overlay.open{display:flex;}
-  .modal{background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;
-    padding:18px;max-height:86vh;overflow-y:auto;}
-  .modal h2{margin:0 0 12px;font-size:17px;}
-  .modal label{display:block;font-size:12px;color:#555;margin:10px 0 4px;}
-  .modal input[type=text],.modal input[type=number]{width:100%;padding:8px;
-    border:1px solid #ccc;border-radius:6px;font-size:14px;}
-  .modal .row-inline{display:flex;gap:10px;}
-  .modal .row-inline > div{flex:1;}
-  .modal-close{display:block;width:100%;margin-top:16px;padding:12px;
-    background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:15px;}
-  .lang-toggle{display:flex;gap:8px;margin-top:6px;}
-  .lang-toggle button{flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;
-    background:#f7f7f7;font-size:13px;}
-  .lang-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-  #compass-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
-  #compass-canvas{width:260px;height:260px;}
-  .qibla-info{text-align:center;font-size:15px;font-weight:700;margin:8px 0 2px;}
-  .qibla-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:10px;}
-  .qibla-note{font-size:11px;color:#888;line-height:1.5;margin-top:10px;}
-  .perm-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;
-    border-radius:8px;font-size:14px;margin-bottom:10px;}
-  .install-hint{font-size:11px;color:#999;text-align:center;margin-top:6px;}
-  .section-title{font-size:13px;font-weight:700;color:#222;margin-top:18px !important;
-    padding-top:12px;border-top:1px solid var(--border);}
-  .checkbox-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#333;margin:8px 0;}
-  .checkbox-row input{width:18px;height:18px;}
-  .file-status{font-size:12px;color:var(--muted);margin:4px 0;word-break:break-all;}
-  .file-row{display:flex;gap:8px;margin-top:4px;}
-  .file-btn{flex:1;text-align:center;padding:9px 6px;border-radius:6px;font-size:12px;
-    background:var(--accent);color:#fff;border:none;cursor:pointer;}
-  .file-btn.secondary{background:#eee;color:#333;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f2a1d">
+  <title>Ezan Vakti - Frastanz</title>
+  <style>
+    :root{
+      --bg:#f4f4f4; --header:#0f2a1d; --accent:#164a30; --accent2:#3a5a40;
+      --text:#222; --muted:#777; --card:#ffffff; --border:#e2e2e2;
+    }
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+    html,body{margin:0;padding:0;height:100%;background:var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text);}
+    #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);
+      padding-bottom:90px;}
+    header{background:var(--header);color:#fff;padding:16px 18px 14px;}
+    header .date{font-size:14px;opacity:.95}
+    header .hijri{font-size:13px;color:#c9e8d4;margin-top:2px}
+    header .prophet{font-size:11px;color:#eaf5ec;margin-top:8px;line-height:1.5}
+    .next-card{background:var(--accent);color:#fff;text-align:center;padding:18px 10px;}
+    .next-card .label{font-size:12px;color:#a9d9bb;text-transform:uppercase;letter-spacing:.5px}
+    .next-card .name{font-size:26px;font-weight:700;margin:4px 0}
+    .next-card .countdown{font-size:20px;font-variant-numeric:tabular-nums}
+    .times{position:relative;padding:10px 0;}
+    .row{display:flex;justify-content:space-between;align-items:center;
+      padding:10px 18px;font-size:16px;border-bottom:1px solid var(--border);}
+    .row .name{color:#333}
+    .row .time{font-weight:700}
+    .row.active{background:#eef7f0}
+    .row .time-wrap{display:flex;align-items:center;gap:10px;}
+    .row .mute-checkbox{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;}
+    #panel-wrap{display:flex;justify-content:center;align-items:center;
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      pointer-events:none; z-index:2;}
+    #panel-img{width:100px;height:118px;object-fit:cover;border-radius:6px;
+      box-shadow:0 2px 10px rgba(0,0,0,.25); border:2px solid #fff;}
+    section.card{background:var(--card);margin:10px 12px;border-radius:10px;
+      padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+    .cat-title{font-size:13px;font-weight:700;color:#fff;padding:6px 10px;
+      border-radius:6px;margin-bottom:6px;display:inline-block;}
+    .cat-din .cat-title{background:#0f2a1d}
+    .cat-tr .cat-title{background:#8a1c1c}
+    .cat-at .cat-title{background:#1c3d8a}
+    .cat-body{font-size:13px;color:#333;line-height:1.7;white-space:pre-line}
+    .content-title{font-size:13px;font-weight:700;color:#fff;background:#3a5a40;
+      padding:6px 10px;border-radius:6px;display:inline-block;margin-bottom:6px}
+    .content-text{font-style:italic;font-size:14px;line-height:1.5;margin-bottom:4px}
+    .content-source{font-size:11px;color:var(--muted)}
+    .disclaimer{font-size:10px;color:#aaa;margin-top:6px;line-height:1.4}
+    #status{font-size:11px;color:var(--muted);text-align:center;padding:6px 10px;}
+    .mute-hint{font-size:11px;color:var(--muted);text-align:center;padding:4px 18px 0;line-height:1.4;}
+    .btn-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;
+      background:#fff;border-top:1px solid var(--border);display:flex;
+      padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:8px;}
+    .btn{flex:1;padding:12px 8px;border:none;border-radius:8px;font-size:14px;
+      font-weight:600;background:var(--accent);color:#fff;}
+    .btn.secondary{background:#eee;color:#333}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;
+      align-items:flex-end;justify-content:center;z-index:50;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;
+      padding:18px;max-height:86vh;overflow-y:auto;}
+    .modal h2{margin:0 0 12px;font-size:17px;}
+    .modal label{display:block;font-size:12px;color:#555;margin:10px 0 4px;}
+    .modal input[type=text],.modal input[type=number]{width:100%;padding:8px;
+      border:1px solid #ccc;border-radius:6px;font-size:14px;}
+    .modal .row-inline{display:flex;gap:10px;}
+    .modal .row-inline > div{flex:1;}
+    .modal-close{display:block;width:100%;margin-top:16px;padding:12px;
+      background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:15px;}
+    .lang-toggle{display:flex;gap:8px;margin-top:6px;}
+    .lang-toggle button{flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;
+      background:#f7f7f7;font-size:13px;}
+    .lang-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    #compass-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
+    #compass-canvas{width:260px;height:260px;}
+    .qibla-info{text-align:center;font-size:15px;font-weight:700;margin:8px 0 2px;}
+    .qibla-sub{text-align:center;font-size:12px;color:var(--muted);margin-bottom:10px;}
+    .qibla-note{font-size:11px;color:#888;line-height:1.5;margin-top:10px;}
+    .perm-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;
+      border-radius:8px;font-size:14px;margin-bottom:10px;}
+    .install-hint{font-size:11px;color:#999;text-align:center;margin-top:6px;}
+    .section-title{font-size:13px;font-weight:700;color:#222;margin-top:18px !important;
+      padding-top:12px;border-top:1px solid var(--border);}
+    .checkbox-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#333;margin:8px 0;}
+    .checkbox-row input{width:18px;height:18px;}
+    .file-status{font-size:12px;color:var(--muted);margin:4px 0;word-break:break-all;}
+    .file-row{display:flex;gap:8px;margin-top:4px;}
+    .file-btn{flex:1;text-align:center;padding:9px 6px;border-radius:6px;font-size:12px;
+      background:var(--accent);color:#fff;border:none;cursor:pointer;}
+    .file-btn.secondary{background:#eee;color:#333;}
+  </style>
 </head>
 <body>
 <div id="app">
@@ -106,24 +109,12 @@
     <div class="countdown" id="next-countdown">--:--:--</div>
   </div>
 
+  <div class="mute-hint" id="mute-hint-text"></div>
   <div class="times" id="times-list">
     <div id="panel-wrap"><img id="panel-img" src=""></div>
   </div>
 
   <div id="status">Yükleniyor...</div>
-
-  <section class="card cat-din">
-    <span class="cat-title" id="cat-din-title">🕌 Dini Önemli Günler</span>
-    <div class="cat-body" id="cat-din-body">-</div>
-  </section>
-  <section class="card cat-tr">
-    <span class="cat-title" id="cat-tr-title">🇹🇷 Türkiye İçin Önemli Günler</span>
-    <div class="cat-body" id="cat-tr-body">-</div>
-  </section>
-  <section class="card cat-at">
-    <span class="cat-title" id="cat-at-title">🇦🇹 Avusturya İçin Önemli Günler</span>
-    <div class="cat-body" id="cat-at-body">-</div>
-  </section>
 
   <section class="card">
     <span class="content-title" id="ayet-title">📖 Günün Ayeti</span>
@@ -137,12 +128,26 @@
     <div class="disclaimer" id="disclaimer-text"></div>
   </section>
 
+  <section class="card cat-din">
+    <span class="cat-title" id="cat-din-title">🕌 Dini Önemli Günler</span>
+    <div class="cat-body" id="cat-din-body">-</div>
+  </section>
+  <section class="card cat-at">
+    <span class="cat-title" id="cat-at-title">🇦🇹 Avusturya İçin Önemli Günler</span>
+    <div class="cat-body" id="cat-at-body">-</div>
+  </section>
+  <section class="card cat-tr">
+    <span class="cat-title" id="cat-tr-title">🇹🇷 Türkiye İçin Önemli Günler</span>
+    <div class="cat-body" id="cat-tr-body">-</div>
+  </section>
+
   <div class="install-hint" id="install-hint"></div>
 </div>
 
 <div class="btn-bar">
   <button class="btn" id="qibla-open-btn">🧭 Kıble</button>
   <button class="btn secondary" id="settings-open-btn">⚙ Ayarlar</button>
+  <button class="btn secondary" id="about-open-btn">ℹ️ Hakkında</button>
 </div>
 
 <!-- Kıble modal -->
@@ -230,741 +235,798 @@
   </div>
 </div>
 
+<!-- Hakkında modal -->
+<div class="modal-overlay" id="about-overlay">
+  <div class="modal">
+    <h2 id="about-modal-title">Hakkında</h2>
+    <p style="font-size:14px;line-height:1.7;">
+      Bu uygulama <strong>Özkan Tinik</strong> tarafından geliştirilmiştir.
+    </p>
+    <div style="font-size:14px;line-height:2;margin-top:8px;">
+      <div>👤 Özkan Tinik</div>
+      <div>✉️ tinik38@gmail.com</div>
+    </div>
+    <div class="qibla-note" style="margin-top:14px;line-height:1.6;">
+      © 2026 Özkan Tinik. Tüm hakları saklıdır.<br>
+      Bu uygulamanın kaynak kodu, tasarımı ve içeriği telif hakkı ile korunmaktadır.
+      Yazılı izin alınmadan kopyalanamaz, çoğaltılamaz, değiştirilemez veya
+      yeniden dağıtılamaz.
+    </div>
+    <button class="modal-close" onclick="closeModal('about-overlay')">Kapat</button>
+  </div>
+</div>
+
 <script>
-/* ======================= i18n ======================= */
-const I18N = {
-  tr: {
-    next_label: "SIRADAKİ VAKİT", loading: "Vakitler indiriliyor...",
-    offline: "Çevrimdışı - son indirilen vakitler kullanılıyor",
-    updated: "Güncellendi: ", update_error: "Vakitler alınamadı, önbellek kullanılıyor.",
-    today: "Bugün", days_left: "gün kaldı", no_upcoming: "Önümüzdeki günlerde önemli bir gün yok.",
-    cat_din: "🕌 Dini Önemli Günler", cat_tr: "🇹🇷 Türkiye İçin Önemli Günler", cat_at: "🇦🇹 Avusturya İçin Önemli Günler",
-    ayet: "📖 Günün Ayeti", hadis: "📜 Günün Hadisi", source: "Kaynak",
-    disclaimer: "* Diyanet'in canlı bir 'günün ayeti/hadisi' servisi olmadığından, yaygın kaynaklara dayanan yerel bir liste kullanılır.",
-    qibla_title: "Kıble Yönü", qibla_bearing: (b,d)=>`Kıble yönü: ${b}° (${d})`,
-    qibla_distance: (km)=>`Kabe'ye kuş uçuşu mesafe: ~${km} km`,
-    qibla_note_off: "Pusula kapalı. Yukarıdaki butona basıp telefon pusulasına izin verin.",
-    qibla_note_on: "Kırmızı ok, telefonunuzu düz tutarak Kabe yönünü gösterir.",
-    compass_perm: "📱 Telefon Pusulasını Etkinleştir", compass_denied: "Pusula izni verilmedi / desteklenmiyor.",
-    settings_title: "Ayarlar", lang: "Dil", ilce: "Diyanet İlçe Kodu (varsayılan: Feldkirch)",
-    reminder: "Vakitten kaç dakika önce hatırlatsın?", lat: "Enlem", lon: "Boylam",
-    notif_btn: "🔔 Bildirimleri Etkinleştir", notif_on: "Bildirimler açık.",
-    notif_off: "Bildirim izni verilmedi. Uygulama açıkken sesli/görsel uyarı yine de çalışır.",
-    close: "Kapat", save: "Kaydet",
-    prayers: {Imsak:"İmsak",Gunes:"Güneş",Ogle:"Öğle",Ikindi:"İkindi",Aksam:"Akşam",Yatsi:"Yatsı"},
-    weekdays: ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"],
-    months: ["Muharrem","Safer","Rebiülevvel","Rebiülahir","Cemaziyelevvel","Cemaziyelahir","Recep","Şaban","Ramazan","Şevval","Zilkade","Zilhicce"],
-    hijri: "Hicri", prophet_birth: "Doğumu: 12 Rebiülevvel (M.S. 571)",
-    prophet_death: "Vefatı: 12 Rebiülevvel, H.11 (M.S. 632)",
-    prophet_years: (y)=>`Vefatından bu yana: ${y} yıl (Hicri)`,
-    install_hint: "İpucu: Tarayıcı menüsünden \"Ana Ekrana Ekle\" ile bunu uygulama gibi kullanabilirsiniz.",
-    reminder_msg: (p,m)=>`${p} vaktine ${m} dakika kaldı`, ezan_msg: (p)=>`${p} vakti girdi`,
-    ezan_dua_title: "Ezan Duası", ezan_dua_setting: "Ezandan sonra ezan duasını göster",
-    ezan_sound_title: "Ezan Sesi", ezan_sound_setting: "Kendi ezan sesinizi yükleyin (mp3)",
-    ezan_sound_current: "Seçili: ", ezan_sound_none: "Seçili değil (varsayılan bip sesi çalar)",
-    ezan_sound_clear: "Sesi Kaldır", ezan_sound_choose: "Dosya Seç",
-    panel_title: "Ortadaki Pano Resmi", panel_setting: "Kendi resminizi yükleyin",
-    panel_reset: "Varsayılana Döndür", panel_choose: "Resim Seç",
-    file_too_big: "Dosya çok büyük (tarayıcı depolama sınırı ~4 MB). Daha küçük bir dosya deneyin.",
-    ezan_overlay_close: "Sustur / Kapat",
-  },
-  de: {
-    next_label: "NÄCHSTES GEBET", loading: "Gebetszeiten werden geladen...",
-    offline: "Offline - zuletzt geladene Zeiten werden verwendet",
-    updated: "Aktualisiert: ", update_error: "Zeiten konnten nicht geladen werden, Cache wird verwendet.",
-    today: "Heute", days_left: "Tage übrig", no_upcoming: "In den nächsten Tagen kein wichtiger Tag.",
-    cat_din: "🕌 Wichtige religiöse Tage", cat_tr: "🇹🇷 Wichtige Tage für die Türkei", cat_at: "🇦🇹 Wichtige Tage für Österreich",
-    ayet: "📖 Vers des Tages", hadis: "📜 Hadith des Tages", source: "Quelle",
-    disclaimer: "* Da es keinen Live-Dienst des Diyanet dafür gibt, wird eine lokale Liste basierend auf gängigen Quellen verwendet.",
-    qibla_title: "Gebetsrichtung (Qibla)", qibla_bearing: (b,d)=>`Qibla-Richtung: ${b}° (${d})`,
-    qibla_distance: (km)=>`Luftlinie zur Kaaba: ~${km} km`,
-    qibla_note_off: "Kompass aus. Tippen Sie oben, um den Handy-Kompass zu erlauben.",
-    qibla_note_on: "Der rote Pfeil zeigt bei flachem Halten des Telefons Richtung Kaaba.",
-    compass_perm: "📱 Handy-Kompass aktivieren", compass_denied: "Kompass-Zugriff verweigert / nicht unterstützt.",
-    settings_title: "Einstellungen", lang: "Sprache", ilce: "Diyanet-Bezirkscode (Standard: Feldkirch)",
-    reminder: "Wie viele Minuten vorher erinnern?", lat: "Breitengrad", lon: "Längengrad",
-    notif_btn: "🔔 Benachrichtigungen aktivieren", notif_on: "Benachrichtigungen aktiv.",
-    notif_off: "Keine Berechtigung. Bei geöffneter App funktionieren Ton/Anzeige trotzdem.",
-    close: "Schließen", save: "Speichern",
-    prayers: {Imsak:"Imsak",Gunes:"Sonnenaufgang",Ogle:"Mittag",Ikindi:"Nachmittag",Aksam:"Abend",Yatsi:"Nacht"},
-    weekdays: ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"],
-    months: ["Muharram","Safar","Rabi al-awwal","Rabi al-thani","Jumada al-awwal","Jumada al-thani","Radschab","Schaban","Ramadan","Schawwal","Dhu al-Qada","Dhu al-Hiddscha"],
-    hijri: "Hidschri", prophet_birth: "Geburt: 12. Rabi' al-awwal (571 n. Chr.)",
-    prophet_death: "Tod: 12. Rabi' al-awwal, 11 H. (632 n. Chr.)",
-    prophet_years: (y)=>`Seit dem Tod: ${y} Jahre (Hidschri)`,
-    install_hint: "Tipp: Über das Browsermenü \"Zum Startbildschirm hinzufügen\", um dies wie eine App zu nutzen.",
-    reminder_msg: (p,m)=>`${p} beginnt in ${m} Minuten`, ezan_msg: (p)=>`Zeit für ${p}`,
-    ezan_dua_title: "Ezan-Gebet", ezan_dua_setting: "Ezan-Gebet nach dem Adhan anzeigen",
-    ezan_sound_title: "Adhan-Ton", ezan_sound_setting: "Eigenen Adhan-Ton hochladen (mp3)",
-    ezan_sound_current: "Ausgewählt: ", ezan_sound_none: "Keiner ausgewählt (Standard-Signalton)",
-    ezan_sound_clear: "Ton entfernen", ezan_sound_choose: "Datei wählen",
-    panel_title: "Bild in der Mitte", panel_setting: "Eigenes Bild hochladen",
-    panel_reset: "Auf Standard zurücksetzen", panel_choose: "Bild wählen",
-    file_too_big: "Datei zu groß (Browser-Limit ~4 MB). Bitte kleinere Datei wählen.",
-    ezan_overlay_close: "Stopp / Schließen",
-  }
-};
-let LANG = localStorage.getItem('ezan_lang') || 'tr';
-const PRAYER_ORDER = ["Imsak","Gunes","Ogle","Ikindi","Aksam","Yatsi"];
-
-/* ======================= Ayet / Hadis (yerel, kaynaklı) ======================= */
-const AYETLER = [
-  {tr:"Allah, hiçbir kimseyi gücünün yetmediği şeyle yükümlü kılmaz.", de:"Allah erlegt niemandem mehr auf, als er zu tragen vermag.", k_tr:"Bakara, 2/286", k_de:"Sure al-Baqara, 2:286"},
-  {tr:"Ey iman edenler! Sabır ve namazla Allah'tan yardım isteyin.", de:"O ihr Gläubigen! Sucht Hilfe in Geduld und Gebet.", k_tr:"Bakara, 2/153", k_de:"Sure al-Baqara, 2:153"},
-  {tr:"Şüphesiz her güçlükle beraber bir kolaylık vardır.", de:"Wahrlich, mit der Schwierigkeit kommt Erleichterung.", k_tr:"İnşirah, 94/6", k_de:"Sure asch-Scharh, 94:6"},
-  {tr:"Haberiniz olsun; kalpler ancak Allah'ı anmakla huzur bulur.", de:"Wahrlich, im Gedenken Allahs finden die Herzen Ruhe.", k_tr:"Ra'd, 13/28", k_de:"Sure ar-Ra'd, 13:28"},
-  {tr:"İyilik ve takva üzerinde yardımlaşın, günah ve düşmanlıkta yardımlaşmayın.", de:"Helft einander in Rechtschaffenheit, nicht in Sünde.", k_tr:"Mâide, 5/2", k_de:"Sure al-Ma'ida, 5:2"},
-  {tr:"Salih amel işleyene, mümin olmak şartıyla güzel bir hayat yaşatırız.", de:"Wer rechtschaffen und gläubig handelt, dem schenken Wir ein gutes Leben.", k_tr:"Nahl, 16/97", k_de:"Sure an-Nahl, 16:97"},
-  {tr:"Kötülüğü, en güzel olanla sav.", de:"Wehre das Böse mit dem ab, was am besten ist.", k_tr:"Fussilet, 41/34", k_de:"Sure Fussilat, 41:34"},
-  {tr:"Sizi kavim ve kabilelere ayırdık ki birbirinizi tanıyasınız.", de:"Wir machten euch zu Völkern, damit ihr einander kennenlernt.", k_tr:"Hucurât, 49/13", k_de:"Sure al-Hudschurat, 49:13"},
-  {tr:"Rabbinizden bağışlanma dileyin; O çok bağışlayandır.", de:"Bittet euren Herrn um Vergebung; Er ist der Vielvergebende.", k_tr:"Nûh, 71/10", k_de:"Sure Nuh, 71:10"},
-  {tr:"Allah'ın rahmetinden ümit kesmeyin.", de:"Verzweifelt nicht an Allahs Barmherzigkeit.", k_tr:"Zümer, 39/53", k_de:"Sure az-Zumar, 39:53"},
-  {tr:"Hoşunuza gitmese de savaş size farz kılındı; hoşlanmadığınız şey hayırlı olabilir.", de:"Es kann sein, dass euch etwas zuwider ist, das gut für euch ist.", k_tr:"Bakara, 2/216", k_de:"Sure al-Baqara, 2:216"},
-  {tr:"Rabbim! İlmimi artır, de.", de:"Sprich: Mein Herr, mehre mir das Wissen.", k_tr:"Tâhâ, 20/114", k_de:"Sure Ta-Ha, 20:114"},
-  {tr:"Allah, bir toplum kendi durumunu değiştirmedikçe onların durumunu değiştirmez.", de:"Allah ändert den Zustand eines Volkes nicht, solange es sich nicht selbst ändert.", k_tr:"Ra'd, 13/11", k_de:"Sure ar-Ra'd, 13:11"},
-  {tr:"Rahmân'ın has kulları, yeryüzünde tevazu ile yürüyenlerdir.", de:"Die Diener des Allerbarmers wandeln bescheiden auf der Erde.", k_tr:"Furkân, 25/63", k_de:"Sure al-Furqan, 25:63"},
-  {tr:"Her şeyi bir ölçüye göre yarattık.", de:"Alle Dinge haben Wir nach einem Maß erschaffen.", k_tr:"Kamer, 54/49", k_de:"Sure al-Qamar, 54:49"},
-  {tr:"Yalnız sana kulluk eder, yalnız senden yardım dileriz.", de:"Dir allein dienen wir, Dich allein bitten wir um Hilfe.", k_tr:"Fâtiha, 1/5", k_de:"Sure al-Fatiha, 1:5"},
-  {tr:"Sizi hayır ile de şer ile de sınamak için deneriz.", de:"Wir prüfen euch mit Bösem wie mit Gutem.", k_tr:"Enbiyâ, 21/35", k_de:"Sure al-Anbiya, 21:35"},
-  {tr:"Sabredenlere mükafatları hesapsız ölçüde ödenecektir.", de:"Den Geduldigen wird ihr Lohn ohne Maß gegeben.", k_tr:"Zümer, 39/10", k_de:"Sure az-Zumar, 39:10"},
-  {tr:"Kullarım seni sorduğunda, şüphesiz ben yakınım.", de:"Wenn Meine Diener nach Mir fragen, so bin Ich nahe.", k_tr:"Bakara, 2/186", k_de:"Sure al-Baqara, 2:186"},
-  {tr:"De ki: O, Allah'tır, tektir. Allah sameddir.", de:"Sprich: Er ist Allah, der Einzige, der Absolute.", k_tr:"İhlâs, 112/1-2", k_de:"Sure al-Ichlas, 112:1-2"},
-];
-const HADISLER = [
-  {tr:"Ameller ancak niyetlere göredir.", de:"Die Taten werden nur nach den Absichten bewertet.", k_tr:"Buhârî, Bed'ü'l-Vahy, 1", k_de:"Bukhari, Bed'ü'l-Vahy, 1"},
-  {tr:"Müslüman, elinden ve dilinden diğer Müslümanların emin olduğu kimsedir.", de:"Ein Muslim ist, vor dessen Hand und Zunge andere sicher sind.", k_tr:"Buhârî, İman, 4", k_de:"Bukhari, İman, 4"},
-  {tr:"Kolaylaştırınız, zorlaştırmayınız.", de:"Macht es leicht, nicht schwer.", k_tr:"Buhârî, İlim, 11", k_de:"Bukhari, İlim, 11"},
-  {tr:"Sizin en hayırlınız, Kur'an'ı öğrenen ve öğretendir.", de:"Der Beste von euch lernt und lehrt den Koran.", k_tr:"Buhârî, Fedâilü'l-Kur'ân, 21", k_de:"Bukhari, Fedailü'l-Kur'an, 21"},
-  {tr:"Gülümsemen, kardeşine karşı bir sadakadır.", de:"Dein Lächeln ist eine Wohltat.", k_tr:"Tirmizî, Birr, 36", k_de:"Tirmidhi, Birr, 36"},
-  {tr:"Veren el, alan elden hayırlıdır.", de:"Die gebende Hand ist besser als die nehmende.", k_tr:"Buhârî, Zekât, 18", k_de:"Bukhari, Zekat, 18"},
-  {tr:"Allah katında en sevimli amel, az da olsa devamlı olandır.", de:"Die beliebteste Tat bei Allah ist die beständige.", k_tr:"Buhârî, Rikak, 18", k_de:"Bukhari, Rikak, 18"},
-  {tr:"Büyüklerimize saygı, küçüklerimize merhamet göstermeyen bizden değildir.", de:"Wer Respekt und Barmherzigkeit vermissen lässt, gehört nicht zu uns.", k_tr:"Tirmizî, Birr, 15", k_de:"Tirmidhi, Birr, 15"},
-  {tr:"Bir kötülük görünce eliyle, olmazsa diliyle, olmazsa kalbiyle düzeltsin.", de:"Wer Verwerfliches sieht, ändere es mit Hand, Zunge oder Herz.", k_tr:"Müslim, İman, 78", k_de:"Muslim, İman, 78"},
-  {tr:"Sadaka, malı asla eksiltmez.", de:"Almosen mindern das Vermögen niemals.", k_tr:"Müslim, Birr, 69", k_de:"Muslim, Birr, 69"},
-  {tr:"Kendisi için istediğini kardeşi için istemedikçe gerçek iman etmiş olmaz.", de:"Keiner glaubt wirklich, bis er für seinen Bruder das wünscht, was für sich selbst.", k_tr:"Buhârî, İman, 7", k_de:"Bukhari, İman, 7"},
-  {tr:"Allah güzeldir, güzelliği sever.", de:"Allah ist schön und liebt die Schönheit.", k_tr:"Müslim, İman, 147", k_de:"Muslim, İman, 147"},
-  {tr:"Zulümden sakının; zulüm kıyamette karanlıktır.", de:"Hütet euch vor Ungerechtigkeit; sie wird zu Finsternis.", k_tr:"Müslim, Birr, 56", k_de:"Muslim, Birr, 56"},
-  {tr:"Mümin, bal arısı gibidir; yediği de bıraktığı da temizdir.", de:"Der Gläubige gleicht der Biene: rein isst und rein hinterlässt sie.", k_tr:"Ahmed b. Hanbel", k_de:"Ahmad ibn Hanbal"},
-  {tr:"İki günü birbirine eşit olan aldanmıştır.", de:"Wer zwei gleiche Tage hat, ist ein Verlierer.", k_tr:"Aclûnî, Keşfü'l-Hafâ", k_de:"Adschluni, Keşfü'l-Hafa"},
-  {tr:"Kişi dostunun yolu üzeredir; kiminle dost olduğuna dikkat et.", de:"Der Mensch folgt der Weise seines Freundes.", k_tr:"Ebû Dâvûd, Edeb, 16", k_de:"Abu Dawud, Edeb, 16"},
-  {tr:"Ana-babaya iyilik, en faziletli amellerdendir.", de:"Güte zu den Eltern gehört zu den vortrefflichsten Taten.", k_tr:"Buhârî, Edeb, 1 (meâlen)", k_de:"Bukhari, Edeb, 1 (sinngemäß)"},
-  {tr:"Komşusu açken tok yatan, kâmil manada mümin değildir.", de:"Wer satt schläft, während der Nachbar hungert, ist kein vollkommener Gläubiger.", k_tr:"Hâkim, el-Müstedrek", k_de:"Hakim, al-Mustadrak"},
-  {tr:"Emin olmayanın imanı, sözünde durmayanın dini tam değildir.", de:"Wer nicht vertrauenswürdig ist, hat keinen vollständigen Glauben.", k_tr:"Ahmed b. Hanbel", k_de:"Ahmad ibn Hanbal"},
-  {tr:"Cenneti, annelerin ayakları altında arayın.", de:"Das Paradies liegt zu Füßen der Mütter.", k_tr:"Nesâî, Cihâd, 6 (meâlen)", k_de:"Nasa'i, Cihad, 6 (sinngemäß)"},
-];
-
-/* ======================= Ezan Duası ======================= */
-const EZAN_DUASI = {
-  arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ إِنَّكَ لَا تُخْلِفُ الْمِيعَادَ",
-  tr: "Allah'ım! Bu eksiksiz davetin ve kılınacak namazın Rabbi! Muhammed'e vesileyi ve fazileti ver. Onu, kendisine vaad ettiğin şanlı makama (makam-ı mahmûd'a) ulaştır. Şüphesiz sen vaadinden dönmezsin.",
-  de: "O Allah, Herr dieses vollkommenen Rufes und des bevorstehenden Gebets! Gib Muhammad die Fürsprache und den Vorzug, und erhebe ihn zu der lobenswerten Stellung, die Du ihm versprochen hast. Wahrlich, Du brichst Dein Versprechen nicht.",
-  k_tr: "Buhârî, Ezan, 8", k_de: "Bukhari, Adhan, 8",
-};
-
-/* ======================= Önemli günler ======================= */
-const DIN_FIXED = {"1-1":"hicri_yilbasi","1-10":"asure","3-12":"mevlid_kandili","7-27":"mirac_kandili",
-  "8-15":"berat_kandili","9-1":"ramazan_baslangic","9-27":"kadir_gecesi","10-1":"ramazan_bayrami",
-  "10-2":"ramazan_bayrami","10-3":"ramazan_bayrami","12-9":"arefe","12-10":"kurban_bayrami",
-  "12-11":"kurban_bayrami","12-12":"kurban_bayrami","12-13":"kurban_bayrami"};
-const DIN_NAMES = {tr:{hicri_yilbasi:"Hicri Yılbaşı",asure:"Aşure Günü",mevlid_kandili:"Mevlid Kandili",
-  mirac_kandili:"Miraç Kandili",berat_kandili:"Berat Kandili",ramazan_baslangic:"Ramazan Ayı Başlangıcı",
-  kadir_gecesi:"Kadir Gecesi",ramazan_bayrami:"Ramazan Bayramı",kurban_bayrami:"Kurban Bayramı",arefe:"Arefe Günü"},
-  de:{hicri_yilbasi:"Islamisches Neujahr",asure:"Aschura-Tag",mevlid_kandili:"Mawlid",
-  mirac_kandili:"Mi'raj-Nacht",berat_kandili:"Bara'a-Nacht",ramazan_baslangic:"Beginn des Ramadan",
-  kadir_gecesi:"Nacht der Bestimmung",ramazan_bayrami:"Ramadanfest",kurban_bayrami:"Opferfest",arefe:"Vortag des Festes"}};
-const TR_FIXED = {"4-23":"23 Nisan Ulusal Egemenlik ve Çocuk Bayramı|Tag der nat. Souveränität u. des Kindes (23. April)",
-  "5-19":"19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı|Gedenktag an Atatürk, Jugend- u. Sporttag (19. Mai)",
-  "7-15":"15 Temmuz Demokrasi ve Millî Birlik Günü|Tag der Demokratie (15. Juli)",
-  "8-30":"30 Ağustos Zafer Bayramı|Tag des Sieges (30. August)",
-  "10-29":"29 Ekim Cumhuriyet Bayramı|Tag der Republik (29. Oktober)",
-  "11-10":"10 Kasım Atatürk'ü Anma Günü|Atatürk-Gedenktag (10. November)"};
-const AT_FIXED = {"1-1":"Yılbaşı|Neujahr","5-1":"İşçi Bayramı|Tag der Arbeit",
-  "10-26":"Avusturya Ulusal Bayramı|Österreichischer Nationalfeiertag",
-  "11-1":"Azizler Günü|Allerheiligen","12-24":"Noel Arefesi|Heiliger Abend",
-  "12-25":"Noel|Weihnachten","12-26":"Aziz Stefan Günü|Stefanitag"};
-
-/* ======================= State ======================= */
-let STATE = {records: [], ilce: 11613, lastFetch: null, offline:false};
-
-function T(key, ...args){
-  const v = I18N[LANG][key];
-  return typeof v === 'function' ? v(...args) : v;
-}
-
-/* ======================= Diyanet API ======================= */
-const API_BASE = "https://ezanvakti.emushaf.net";
-async function fetchTimes(ilceId){
-  const res = await fetch(`${API_BASE}/vakitler/${ilceId}`);
-  if(!res.ok) throw new Error("HTTP "+res.status);
-  return await res.json();
-}
-
-async function loadTimes(force){
-  const cfg = getConfig();
-  document.getElementById('status').textContent = T('loading');
-  try{
-    const records = await fetchTimes(cfg.ilce);
-    STATE.records = records;
-    STATE.offline = false;
-    localStorage.setItem('ezan_cache', JSON.stringify({ilce: cfg.ilce, records, ts: Date.now()}));
-    document.getElementById('status').textContent = T('updated') + new Date().toLocaleTimeString();
-  }catch(e){
-    STATE.offline = true;
-    const cache = JSON.parse(localStorage.getItem('ezan_cache') || 'null');
-    if(cache && cache.ilce == cfg.ilce){
-      STATE.records = cache.records;
-      document.getElementById('status').textContent = T('offline');
-    }else{
-      document.getElementById('status').textContent = T('update_error');
+  /* ======================= i18n ======================= */
+  const I18N = {
+    tr: {
+      next_label: "SIRADAKİ VAKİT", loading: "Vakitler indiriliyor...",
+      offline: "Çevrimdışı - son indirilen vakitler kullanılıyor",
+      updated: "Güncellendi: ", update_error: "Vakitler alınamadı, önbellek kullanılıyor.",
+      today: "Bugün", days_left: "gün kaldı", no_upcoming: "Önümüzdeki günlerde önemli bir gün yok.",
+      cat_din: "🕌 Dini Önemli Günler", cat_tr: "🇹🇷 Türkiye İçin Önemli Günler", cat_at: "🇦🇹 Avusturya İçin Önemli Günler",
+      ayet: "📖 Günün Ayeti", hadis: "📜 Günün Hadisi", source: "Kaynak",
+      disclaimer: "* Diyanet'in canlı bir 'günün ayeti/hadisi' servisi olmadığından, yaygın kaynaklara dayanan yerel bir liste kullanılır.",
+      qibla_title: "Kıble Yönü", qibla_bearing: (b,d)=>`Kıble yönü: ${b}° (${d})`,
+      qibla_distance: (km)=>`Kabe'ye kuş uçuşu mesafe: ~${km} km`,
+      qibla_note_off: "Pusula kapalı. Yukarıdaki butona basıp telefon pusulasına izin verin.",
+      qibla_note_on: "Kırmızı ok, telefonunuzu düz tutarak Kabe yönünü gösterir.",
+      compass_perm: "📱 Telefon Pusulasını Etkinleştir", compass_denied: "Pusula izni verilmedi / desteklenmiyor.",
+      settings_title: "Ayarlar", lang: "Dil", ilce: "Diyanet İlçe Kodu (varsayılan: Feldkirch)",
+      reminder: "Vakitten kaç dakika önce hatırlatsın?", lat: "Enlem", lon: "Boylam",
+      notif_btn: "🔔 Bildirimleri Etkinleştir", notif_on: "Bildirimler açık.",
+      notif_off: "Bildirim izni verilmedi. Uygulama açıkken sesli/görsel uyarı yine de çalışır.",
+      close: "Kapat", save: "Kaydet",
+      prayers: {Imsak:"İmsak",Gunes:"Güneş",Ogle:"Öğle",Ikindi:"İkindi",Aksam:"Akşam",Yatsi:"Yatsı"},
+      weekdays: ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"],
+      months: ["Muharrem","Safer","Rebiülevvel","Rebiülahir","Cemaziyelevvel","Cemaziyelahir","Recep","Şaban","Ramazan","Şevval","Zilkade","Zilhicce"],
+      hijri: "Hicri", prophet_birth: "Doğumu: 12 Rebiülevvel (M.S. 571)",
+      prophet_death: "Vefatı: 12 Rebiülevvel, H.11 (M.S. 632)",
+      prophet_years: (y)=>`Vefatından bu yana: ${y} yıl (Hicri)`,
+      install_hint: "İpucu: Tarayıcı menüsünden \"Ana Ekrana Ekle\" ile bunu uygulama gibi kullanabilirsiniz.",
+      reminder_msg: (p,m)=>`${p} vaktine ${m} dakika kaldı`, ezan_msg: (p)=>`${p} vakti girdi`,
+      ezan_dua_title: "Ezan Duası", ezan_dua_setting: "Ezandan sonra ezan duasını göster",
+      ezan_sound_title: "Ezan Sesi", ezan_sound_setting: "Kendi ezan sesinizi yükleyin (mp3)",
+      ezan_sound_current: "Seçili: ", ezan_sound_none: "Seçili değil (varsayılan bip sesi çalar)",
+      ezan_sound_clear: "Sesi Kaldır", ezan_sound_choose: "Dosya Seç",
+      panel_title: "Ortadaki Pano Resmi", panel_setting: "Kendi resminizi yükleyin",
+      panel_reset: "Varsayılana Döndür", panel_choose: "Resim Seç",
+      file_too_big: "Dosya çok büyük (tarayıcı depolama sınırı ~4 MB). Daha küçük bir dosya deneyin.",
+      ezan_overlay_close: "Sustur / Kapat",
+      mute_title: "Bu vakit için ezan sesini kapat",
+      mute_hint: "☑ kutucuğu işaretlersen o vaktin ezan sesi çalmaz (siz açana kadar) - bildirim yine görünür.",
+    },
+    de: {
+      next_label: "NÄCHSTES GEBET", loading: "Gebetszeiten werden geladen...",
+      offline: "Offline - zuletzt geladene Zeiten werden verwendet",
+      updated: "Aktualisiert: ", update_error: "Zeiten konnten nicht geladen werden, Cache wird verwendet.",
+      today: "Heute", days_left: "Tage übrig", no_upcoming: "In den nächsten Tagen kein wichtiger Tag.",
+      cat_din: "🕌 Wichtige religiöse Tage", cat_tr: "🇹🇷 Wichtige Tage für die Türkei", cat_at: "🇦🇹 Wichtige Tage für Österreich",
+      ayet: "📖 Vers des Tages", hadis: "📜 Hadith des Tages", source: "Quelle",
+      disclaimer: "* Da es keinen Live-Dienst des Diyanet dafür gibt, wird eine lokale Liste basierend auf gängigen Quellen verwendet.",
+      qibla_title: "Gebetsrichtung (Qibla)", qibla_bearing: (b,d)=>`Qibla-Richtung: ${b}° (${d})`,
+      qibla_distance: (km)=>`Luftlinie zur Kaaba: ~${km} km`,
+      qibla_note_off: "Kompass aus. Tippen Sie oben, um den Handy-Kompass zu erlauben.",
+      qibla_note_on: "Der rote Pfeil zeigt bei flachem Halten des Telefons Richtung Kaaba.",
+      compass_perm: "📱 Handy-Kompass aktivieren", compass_denied: "Kompass-Zugriff verweigert / nicht unterstützt.",
+      settings_title: "Einstellungen", lang: "Sprache", ilce: "Diyanet-Bezirkscode (Standard: Feldkirch)",
+      reminder: "Wie viele Minuten vorher erinnern?", lat: "Breitengrad", lon: "Längengrad",
+      notif_btn: "🔔 Benachrichtigungen aktivieren", notif_on: "Benachrichtigungen aktiv.",
+      notif_off: "Keine Berechtigung. Bei geöffneter App funktionieren Ton/Anzeige trotzdem.",
+      close: "Schließen", save: "Speichern",
+      prayers: {Imsak:"Imsak",Gunes:"Sonnenaufgang",Ogle:"Mittag",Ikindi:"Nachmittag",Aksam:"Abend",Yatsi:"Nacht"},
+      weekdays: ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"],
+      months: ["Muharram","Safar","Rabi al-awwal","Rabi al-thani","Jumada al-awwal","Jumada al-thani","Radschab","Schaban","Ramadan","Schawwal","Dhu al-Qada","Dhu al-Hiddscha"],
+      hijri: "Hidschri", prophet_birth: "Geburt: 12. Rabi' al-awwal (571 n. Chr.)",
+      prophet_death: "Tod: 12. Rabi' al-awwal, 11 H. (632 n. Chr.)",
+      prophet_years: (y)=>`Seit dem Tod: ${y} Jahre (Hidschri)`,
+      install_hint: "Tipp: Über das Browsermenü \"Zum Startbildschirm hinzufügen\", um dies wie eine App zu nutzen.",
+      reminder_msg: (p,m)=>`${p} beginnt in ${m} Minuten`, ezan_msg: (p)=>`Zeit für ${p}`,
+      ezan_dua_title: "Ezan-Gebet", ezan_dua_setting: "Ezan-Gebet nach dem Adhan anzeigen",
+      ezan_sound_title: "Adhan-Ton", ezan_sound_setting: "Eigenen Adhan-Ton hochladen (mp3)",
+      ezan_sound_current: "Ausgewählt: ", ezan_sound_none: "Keiner ausgewählt (Standard-Signalton)",
+      ezan_sound_clear: "Ton entfernen", ezan_sound_choose: "Datei wählen",
+      panel_title: "Bild in der Mitte", panel_setting: "Eigenes Bild hochladen",
+      panel_reset: "Auf Standard zurücksetzen", panel_choose: "Bild wählen",
+      file_too_big: "Datei zu groß (Browser-Limit ~4 MB). Bitte kleinere Datei wählen.",
+      ezan_overlay_close: "Stopp / Schließen",
+      mute_title: "Adhan-Ton für dieses Gebet stummschalten",
+      mute_hint: "☑ Kästchen ankreuzen = für dieses Gebet ertönt kein Adhan-Ton (bis Sie es wieder abwählen) - die Benachrichtigung erscheint trotzdem.",
     }
-  }
-  renderAll();
-}
+  };
+  let LANG = localStorage.getItem('ezan_lang') || 'tr';
+  const PRAYER_ORDER = ["Imsak","Gunes","Ogle","Ikindi","Aksam","Yatsi"];
 
-function pad2(n){ return String(n).padStart(2,'0'); }
-function formatDateKey(date){
-  // Diyanet formatı ile birebir aynı: DD.MM.YYYY (sıfırlı, iki haneli).
-  // toLocaleDateString() bazı telefon/tarayıcılarda tek haneli gün/ay
-  // üretebiliyor (ör. "28.8.2026"), bu da eşleşmeyi bozup vakitlerin
-  // boş görünmesine sebep oluyordu - bu yüzden burada elle biçimlendiriyoruz.
-  return `${pad2(date.getDate())}.${pad2(date.getMonth()+1)}.${date.getFullYear()}`;
-}
-function findRecordForDate(records, date){
-  const target = formatDateKey(date);
-  return records.find(r => (r.MiladiTarihKisa||'').trim() === target);
-}
+  /* ======================= Ayet / Hadis (yerel, kaynaklı) ======================= */
+  const AYETLER = [
+    {tr:"Allah, hiçbir kimseyi gücünün yetmediği şeyle yükümlü kılmaz.", de:"Allah erlegt niemandem mehr auf, als er zu tragen vermag.", k_tr:"Bakara, 2/286", k_de:"Sure al-Baqara, 2:286"},
+    {tr:"Ey iman edenler! Sabır ve namazla Allah'tan yardım isteyin.", de:"O ihr Gläubigen! Sucht Hilfe in Geduld und Gebet.", k_tr:"Bakara, 2/153", k_de:"Sure al-Baqara, 2:153"},
+    {tr:"Şüphesiz her güçlükle beraber bir kolaylık vardır.", de:"Wahrlich, mit der Schwierigkeit kommt Erleichterung.", k_tr:"İnşirah, 94/6", k_de:"Sure asch-Scharh, 94:6"},
+    {tr:"Haberiniz olsun; kalpler ancak Allah'ı anmakla huzur bulur.", de:"Wahrlich, im Gedenken Allahs finden die Herzen Ruhe.", k_tr:"Ra'd, 13/28", k_de:"Sure ar-Ra'd, 13:28"},
+    {tr:"İyilik ve takva üzerinde yardımlaşın, günah ve düşmanlıkta yardımlaşmayın.", de:"Helft einander in Rechtschaffenheit, nicht in Sünde.", k_tr:"Mâide, 5/2", k_de:"Sure al-Ma'ida, 5:2"},
+    {tr:"Salih amel işleyene, mümin olmak şartıyla güzel bir hayat yaşatırız.", de:"Wer rechtschaffen und gläubig handelt, dem schenken Wir ein gutes Leben.", k_tr:"Nahl, 16/97", k_de:"Sure an-Nahl, 16:97"},
+    {tr:"Kötülüğü, en güzel olanla sav.", de:"Wehre das Böse mit dem ab, was am besten ist.", k_tr:"Fussilet, 41/34", k_de:"Sure Fussilat, 41:34"},
+    {tr:"Sizi kavim ve kabilelere ayırdık ki birbirinizi tanıyasınız.", de:"Wir machten euch zu Völkern, damit ihr einander kennenlernt.", k_tr:"Hucurât, 49/13", k_de:"Sure al-Hudschurat, 49:13"},
+    {tr:"Rabbinizden bağışlanma dileyin; O çok bağışlayandır.", de:"Bittet euren Herrn um Vergebung; Er ist der Vielvergebende.", k_tr:"Nûh, 71/10", k_de:"Sure Nuh, 71:10"},
+    {tr:"Allah'ın rahmetinden ümit kesmeyin.", de:"Verzweifelt nicht an Allahs Barmherzigkeit.", k_tr:"Zümer, 39/53", k_de:"Sure az-Zumar, 39:53"},
+    {tr:"Hoşunuza gitmese de savaş size farz kılındı; hoşlanmadığınız şey hayırlı olabilir.", de:"Es kann sein, dass euch etwas zuwider ist, das gut für euch ist.", k_tr:"Bakara, 2/216", k_de:"Sure al-Baqara, 2:216"},
+    {tr:"Rabbim! İlmimi artır, de.", de:"Sprich: Mein Herr, mehre mir das Wissen.", k_tr:"Tâhâ, 20/114", k_de:"Sure Ta-Ha, 20:114"},
+    {tr:"Allah, bir toplum kendi durumunu değiştirmedikçe onların durumunu değiştirmez.", de:"Allah ändert den Zustand eines Volkes nicht, solange es sich nicht selbst ändert.", k_tr:"Ra'd, 13/11", k_de:"Sure ar-Ra'd, 13:11"},
+    {tr:"Rahmân'ın has kulları, yeryüzünde tevazu ile yürüyenlerdir.", de:"Die Diener des Allerbarmers wandeln bescheiden auf der Erde.", k_tr:"Furkân, 25/63", k_de:"Sure al-Furqan, 25:63"},
+    {tr:"Her şeyi bir ölçüye göre yarattık.", de:"Alle Dinge haben Wir nach einem Maß erschaffen.", k_tr:"Kamer, 54/49", k_de:"Sure al-Qamar, 54:49"},
+    {tr:"Yalnız sana kulluk eder, yalnız senden yardım dileriz.", de:"Dir allein dienen wir, Dich allein bitten wir um Hilfe.", k_tr:"Fâtiha, 1/5", k_de:"Sure al-Fatiha, 1:5"},
+    {tr:"Sizi hayır ile de şer ile de sınamak için deneriz.", de:"Wir prüfen euch mit Bösem wie mit Gutem.", k_tr:"Enbiyâ, 21/35", k_de:"Sure al-Anbiya, 21:35"},
+    {tr:"Sabredenlere mükafatları hesapsız ölçüde ödenecektir.", de:"Den Geduldigen wird ihr Lohn ohne Maß gegeben.", k_tr:"Zümer, 39/10", k_de:"Sure az-Zumar, 39:10"},
+    {tr:"Kullarım seni sorduğunda, şüphesiz ben yakınım.", de:"Wenn Meine Diener nach Mir fragen, so bin Ich nahe.", k_tr:"Bakara, 2/186", k_de:"Sure al-Baqara, 2:186"},
+    {tr:"De ki: O, Allah'tır, tektir. Allah sameddir.", de:"Sprich: Er ist Allah, der Einzige, der Absolute.", k_tr:"İhlâs, 112/1-2", k_de:"Sure al-Ichlas, 112:1-2"},
+  ];
+  const HADISLER = [
+    {tr:"Ameller ancak niyetlere göredir.", de:"Die Taten werden nur nach den Absichten bewertet.", k_tr:"Buhârî, Bed'ü'l-Vahy, 1", k_de:"Bukhari, Bed'ü'l-Vahy, 1"},
+    {tr:"Müslüman, elinden ve dilinden diğer Müslümanların emin olduğu kimsedir.", de:"Ein Muslim ist, vor dessen Hand und Zunge andere sicher sind.", k_tr:"Buhârî, İman, 4", k_de:"Bukhari, İman, 4"},
+    {tr:"Kolaylaştırınız, zorlaştırmayınız.", de:"Macht es leicht, nicht schwer.", k_tr:"Buhârî, İlim, 11", k_de:"Bukhari, İlim, 11"},
+    {tr:"Sizin en hayırlınız, Kur'an'ı öğrenen ve öğretendir.", de:"Der Beste von euch lernt und lehrt den Koran.", k_tr:"Buhârî, Fedâilü'l-Kur'ân, 21", k_de:"Bukhari, Fedailü'l-Kur'an, 21"},
+    {tr:"Gülümsemen, kardeşine karşı bir sadakadır.", de:"Dein Lächeln ist eine Wohltat.", k_tr:"Tirmizî, Birr, 36", k_de:"Tirmidhi, Birr, 36"},
+    {tr:"Veren el, alan elden hayırlıdır.", de:"Die gebende Hand ist besser als die nehmende.", k_tr:"Buhârî, Zekât, 18", k_de:"Bukhari, Zekat, 18"},
+    {tr:"Allah katında en sevimli amel, az da olsa devamlı olandır.", de:"Die beliebteste Tat bei Allah ist die beständige.", k_tr:"Buhârî, Rikak, 18", k_de:"Bukhari, Rikak, 18"},
+    {tr:"Büyüklerimize saygı, küçüklerimize merhamet göstermeyen bizden değildir.", de:"Wer Respekt und Barmherzigkeit vermissen lässt, gehört nicht zu uns.", k_tr:"Tirmizî, Birr, 15", k_de:"Tirmidhi, Birr, 15"},
+    {tr:"Bir kötülük görünce eliyle, olmazsa diliyle, olmazsa kalbiyle düzeltsin.", de:"Wer Verwerfliches sieht, ändere es mit Hand, Zunge oder Herz.", k_tr:"Müslim, İman, 78", k_de:"Muslim, İman, 78"},
+    {tr:"Sadaka, malı asla eksiltmez.", de:"Almosen mindern das Vermögen niemals.", k_tr:"Müslim, Birr, 69", k_de:"Muslim, Birr, 69"},
+    {tr:"Kendisi için istediğini kardeşi için istemedikçe gerçek iman etmiş olmaz.", de:"Keiner glaubt wirklich, bis er für seinen Bruder das wünscht, was für sich selbst.", k_tr:"Buhârî, İman, 7", k_de:"Bukhari, İman, 7"},
+    {tr:"Allah güzeldir, güzelliği sever.", de:"Allah ist schön und liebt die Schönheit.", k_tr:"Müslim, İman, 147", k_de:"Muslim, İman, 147"},
+    {tr:"Zulümden sakının; zulüm kıyamette karanlıktır.", de:"Hütet euch vor Ungerechtigkeit; sie wird zu Finsternis.", k_tr:"Müslim, Birr, 56", k_de:"Muslim, Birr, 56"},
+    {tr:"Mümin, bal arısı gibidir; yediği de bıraktığı da temizdir.", de:"Der Gläubige gleicht der Biene: rein isst und rein hinterlässt sie.", k_tr:"Ahmed b. Hanbel", k_de:"Ahmad ibn Hanbal"},
+    {tr:"İki günü birbirine eşit olan aldanmıştır.", de:"Wer zwei gleiche Tage hat, ist ein Verlierer.", k_tr:"Aclûnî, Keşfü'l-Hafâ", k_de:"Adschluni, Keşfü'l-Hafa"},
+    {tr:"Kişi dostunun yolu üzeredir; kiminle dost olduğuna dikkat et.", de:"Der Mensch folgt der Weise seines Freundes.", k_tr:"Ebû Dâvûd, Edeb, 16", k_de:"Abu Dawud, Edeb, 16"},
+    {tr:"Ana-babaya iyilik, en faziletli amellerdendir.", de:"Güte zu den Eltern gehört zu den vortrefflichsten Taten.", k_tr:"Buhârî, Edeb, 1 (meâlen)", k_de:"Bukhari, Edeb, 1 (sinngemäß)"},
+    {tr:"Komşusu açken tok yatan, kâmil manada mümin değildir.", de:"Wer satt schläft, während der Nachbar hungert, ist kein vollkommener Gläubiger.", k_tr:"Hâkim, el-Müstedrek", k_de:"Hakim, al-Mustadrak"},
+    {tr:"Emin olmayanın imanı, sözünde durmayanın dini tam değildir.", de:"Wer nicht vertrauenswürdig ist, hat keinen vollständigen Glauben.", k_tr:"Ahmed b. Hanbel", k_de:"Ahmad ibn Hanbal"},
+    {tr:"Cenneti, annelerin ayakları altında arayın.", de:"Das Paradies liegt zu Füßen der Mütter.", k_tr:"Nesâî, Cihâd, 6 (meâlen)", k_de:"Nasa'i, Cihad, 6 (sinngemäß)"},
+  ];
 
-/* ======================= Render ======================= */
-// Hangi vakitler için hatırlatma/ezan zaten tetiklendi - telefonun kalıcı
-// hafızasına (localStorage) yazılır. Sadece hafızada (JS değişkeninde)
-// tutmak yeterli değildi: bazı telefon tarayıcıları arka plandaki sekmeyi
-// bir süre sonra kendiliğinden yeniliyor/sıfırlıyor, bu da programın
-// "bu vakti zaten çaldım" bilgisini unutup AYNI VAKTİ TEKRAR ÇALMASINA
-// sebep oluyordu. Artık bu bilgi telefonda kalıcı olarak saklanıyor.
-function loadFiredState(){
-  const today = new Date().toDateString();
-  try{
-    const raw = JSON.parse(localStorage.getItem('ezan_fired_state') || 'null');
-    if(raw && raw.date === today){
-      return {date: today, reminder: new Set(raw.reminder || []), ezan: new Set(raw.ezan || [])};
-    }
-  }catch(e){}
-  return {date: today, reminder: new Set(), ezan: new Set()};
-}
-function saveFiredState(){
-  localStorage.setItem('ezan_fired_state', JSON.stringify({
-    date: firedState.date,
-    reminder: Array.from(firedState.reminder),
-    ezan: Array.from(firedState.ezan),
-  }));
-}
-let firedState = loadFiredState();
+  /* ======================= Ezan Duası ======================= */
+  const EZAN_DUASI = {
+    arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ إِنَّكَ لَا تُخْلِفُ الْمِيعَادَ",
+    tr: "Allah'ım! Bu eksiksiz davetin ve kılınacak namazın Rabbi! Muhammed'e vesileyi ve fazileti ver. Onu, kendisine vaad ettiğin şanlı makama (makam-ı mahmûd'a) ulaştır. Şüphesiz sen vaadinden dönmezsin.",
+    de: "O Allah, Herr dieses vollkommenen Rufes und des bevorstehenden Gebets! Gib Muhammad die Fürsprache und den Vorzug, und erhebe ihn zu der lobenswerten Stellung, die Du ihm versprochen hast. Wahrlich, Du brichst Dein Versprechen nicht.",
+    k_tr: "Buhârî, Ezan, 8", k_de: "Bukhari, Adhan, 8",
+  };
 
-function renderAll(){
-  const t = I18N[LANG];
-  document.getElementById('cat-din-title').textContent = t.cat_din;
-  document.getElementById('cat-tr-title').textContent = t.cat_tr;
-  document.getElementById('cat-at-title').textContent = t.cat_at;
-  document.getElementById('ayet-title').textContent = t.ayet;
-  document.getElementById('hadis-title').textContent = t.hadis;
-  document.getElementById('disclaimer-text').textContent = t.disclaimer;
-  document.getElementById('next-label').textContent = t.next_label;
-  document.getElementById('install-hint').textContent = t.install_hint;
+  /* ======================= Önemli günler ======================= */
+  const DIN_FIXED = {"1-1":"hicri_yilbasi","1-10":"asure","3-12":"mevlid_kandili","7-27":"mirac_kandili",
+    "8-15":"berat_kandili","9-1":"ramazan_baslangic","9-27":"kadir_gecesi","10-1":"ramazan_bayrami",
+    "10-2":"ramazan_bayrami","10-3":"ramazan_bayrami","12-9":"arefe","12-10":"kurban_bayrami",
+    "12-11":"kurban_bayrami","12-12":"kurban_bayrami","12-13":"kurban_bayrami"};
+  const DIN_NAMES = {tr:{hicri_yilbasi:"Hicri Yılbaşı",asure:"Aşure Günü",mevlid_kandili:"Mevlid Kandili",
+    mirac_kandili:"Miraç Kandili",berat_kandili:"Berat Kandili",ramazan_baslangic:"Ramazan Ayı Başlangıcı",
+    kadir_gecesi:"Kadir Gecesi",ramazan_bayrami:"Ramazan Bayramı",kurban_bayrami:"Kurban Bayramı",arefe:"Arefe Günü"},
+    de:{hicri_yilbasi:"Islamisches Neujahr",asure:"Aschura-Tag",mevlid_kandili:"Mawlid",
+    mirac_kandili:"Mi'raj-Nacht",berat_kandili:"Bara'a-Nacht",ramazan_baslangic:"Beginn des Ramadan",
+    kadir_gecesi:"Nacht der Bestimmung",ramazan_bayrami:"Ramadanfest",kurban_bayrami:"Opferfest",arefe:"Vortag des Festes"}};
+  const TR_FIXED = {"4-23":"23 Nisan Ulusal Egemenlik ve Çocuk Bayramı|Tag der nat. Souveränität u. des Kindes (23. April)",
+    "5-19":"19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı|Gedenktag an Atatürk, Jugend- u. Sporttag (19. Mai)",
+    "7-15":"15 Temmuz Demokrasi ve Millî Birlik Günü|Tag der Demokratie (15. Juli)",
+    "8-30":"30 Ağustos Zafer Bayramı|Tag des Sieges (30. August)",
+    "10-29":"29 Ekim Cumhuriyet Bayramı|Tag der Republik (29. Oktober)",
+    "11-10":"10 Kasım Atatürk'ü Anma Günü|Atatürk-Gedenktag (10. November)"};
+  const AT_FIXED = {"1-1":"Yılbaşı|Neujahr","5-1":"İşçi Bayramı|Tag der Arbeit",
+    "10-26":"Avusturya Ulusal Bayramı|Österreichischer Nationalfeiertag",
+    "11-1":"Azizler Günü|Allerheiligen","12-24":"Noel Arefesi|Heiliger Abend",
+    "12-25":"Noel|Weihnachten","12-26":"Aziz Stefan Günü|Stefanitag"};
 
-  const now = new Date();
-  document.getElementById('date-line').textContent =
-    formatDateKey(now) + ' - ' + t.weekdays[(now.getDay()+6)%7];
+  /* ======================= State ======================= */
+  let STATE = {records: [], ilce: 11613, lastFetch: null, offline:false};
 
-  // Gün değiştiyse hatırlatma/ezan geçmişini sıfırla (yeni gün, yeni vakitler)
-  const todayKey = now.toDateString();
-  if(todayKey !== firedState.date){
-    firedState = {date: todayKey, reminder: new Set(), ezan: new Set()};
-    saveFiredState();
-  }
-
-  const today = findRecordForDate(STATE.records, now);
-  const tomorrow = findRecordForDate(STATE.records, new Date(now.getTime()+86400000));
-
-  const timesList = document.getElementById('times-list');
-  timesList.querySelectorAll('.row').forEach(r=>r.remove());
-  let nextKey=null, nextDate=null;
-  PRAYER_ORDER.forEach(key=>{
-    const row = document.createElement('div');
-    row.className='row';
-    const val = today ? (today[key]||'--:--') : '--:--';
-    row.innerHTML = `<span class="name">${t.prayers[key]}</span><span class="time">${val}</span>`;
-    timesList.appendChild(row);
-    if(today && val !== '--:--'){
-      const [hh,mm] = val.split(':').map(Number);
-      const dt = new Date(now); dt.setHours(hh,mm,0,0);
-      if(dt > now && !nextDate){ nextKey=key; nextDate=dt; row.classList.add('active'); }
-    }
-  });
-  if(!nextDate && tomorrow && tomorrow.Imsak){
-    const [hh,mm] = tomorrow.Imsak.split(':').map(Number);
-    const dt = new Date(now.getTime()+86400000); dt.setHours(hh,mm,0,0);
-    nextKey='Imsak'; nextDate=dt;
-  }
-  document.getElementById('next-name').textContent = nextKey ? t.prayers[nextKey] : '-';
-  window._nextDate = nextDate; window._nextKey = nextKey;
-
-  if(today){
-    const hicri = today.HicriTarihKisa || '';
-    document.getElementById('hijri-line').textContent = t.hijri + ': ' + formatHijri(hicri, t);
-    const hy = parseHicriYear(hicri);
-    document.getElementById('prophet-line').innerHTML =
-      t.prophet_birth + '<br>' + t.prophet_death + '<br>' +
-      (hy ? t.prophet_years(hy - 11) : t.prophet_years('-'));
+  function T(key, ...args){
+    const v = I18N[LANG][key];
+    return typeof v === 'function' ? v(...args) : v;
   }
 
-  renderSpecialDays(now, today ? today : null);
-  renderDailyContent(now);
-}
-
-function parseHicriYear(hicriKisa){
-  const parts = (hicriKisa||'').trim().split('.');
-  if(parts.length===3) return parseInt(parts[2],10);
-  return null;
-}
-function formatHijri(hicriKisa, t){
-  const parts = (hicriKisa||'').trim().split('.');
-  if(parts.length!==3) return hicriKisa||'';
-  const gun=parseInt(parts[0],10), ay=parseInt(parts[1],10), yil=parts[2];
-  return `${gun} ${t.months[ay-1]||ay} ${yil}`;
-}
-
-function renderSpecialDays(now, todayRec){
-  const t = I18N[LANG];
-  // Dini (Hicri, kayıtlardan)
-  let dinLines = [];
-  for(const rec of STATE.records){
-    const hicri = rec.HicriTarihKisa; if(!hicri) continue;
-    const parts = hicri.trim().split('.'); if(parts.length!==3) continue;
-    const gun=parseInt(parts[0],10), ay=parseInt(parts[1],10);
-    const mdate = parseMiladi(rec.MiladiTarihKisa);
-    if(!mdate || mdate < stripTime(now)) continue;
-    const daysDiff = Math.round((mdate-stripTime(now))/86400000);
-    if(daysDiff>45) break;
-    const key = DIN_FIXED[`${ay}-${gun}`];
-    if(key) dinLines.push({date:mdate, text: DIN_NAMES[LANG][key], days:daysDiff});
-    if(ay===7 && mdate.getDay()===4 && !dinLines.some(d=>d._regaib)){
-      dinLines.push({date:mdate, text: LANG==='tr'?'Regaib Kandili':'Raghaib-Nacht', days:daysDiff, _regaib:true});
-    }
+  /* ======================= Diyanet API ======================= */
+  const API_BASE = "https://ezanvakti.emushaf.net";
+  async function fetchTimes(ilceId){
+    const res = await fetch(`${API_BASE}/vakitler/${ilceId}`);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    return await res.json();
   }
-  dinLines.sort((a,b)=>a.date-b.date);
-  renderCategoryBody('cat-din-body', dinLines.slice(0,3), t);
 
-  // TR / AT (sabit miladi)
-  renderFixedCategory('cat-tr-body', TR_FIXED, now, t);
-  renderFixedCategory('cat-at-body', AT_FIXED, now, t);
-}
-function stripTime(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
-function parseMiladi(s){
-  if(!s) return null;
-  const [d,m,y] = s.trim().split('.').map(Number);
-  if(!d||!m||!y) return null;
-  return new Date(y,m-1,d);
-}
-function renderCategoryBody(elId, items, t){
-  const el = document.getElementById(elId);
-  if(!items.length){ el.textContent = t.no_upcoming; return; }
-  el.textContent = items.map(it=> it.days===0 ? `• ${it.text} (${t.today})` : `• ${it.text} - ${it.days} ${t.days_left}`).join('\n');
-}
-function renderFixedCategory(elId, fixedMap, now, t){
-  const today0 = stripTime(now);
-  let items = [];
-  for(const key in fixedMap){
-    const [m,d] = key.split('-').map(Number);
-    let year = now.getFullYear();
-    let occ = new Date(year, m-1, d);
-    if(occ < today0) occ = new Date(year+1, m-1, d);
-    const days = Math.round((occ-today0)/86400000);
-    if(days<=60){
-      const label = fixedMap[key].split('|');
-      items.push({date:occ, text: LANG==='tr'?label[0]:label[1], days});
-    }
-  }
-  items.sort((a,b)=>a.date-b.date);
-  renderCategoryBody(elId, items.slice(0,3), t);
-}
-
-function renderDailyContent(now){
-  const t = I18N[LANG];
-  const dayOfYear = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
-  const ayet = AYETLER[dayOfYear % AYETLER.length];
-  const hadis = HADISLER[dayOfYear % HADISLER.length];
-  document.getElementById('ayet-text').textContent = '\u201c'+(LANG==='tr'?ayet.tr:ayet.de)+'\u201d';
-  document.getElementById('ayet-source').textContent = t.source+': '+(LANG==='tr'?ayet.k_tr:ayet.k_de);
-  document.getElementById('hadis-text').textContent = '\u201c'+(LANG==='tr'?hadis.tr:hadis.de)+'\u201d';
-  document.getElementById('hadis-source').textContent = t.source+': '+(LANG==='tr'?hadis.k_tr:hadis.k_de);
-}
-
-/* ======================= Panel resmi ======================= */
-function initPanel(){
-  const img = document.getElementById('panel-img');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="110" height="130" viewBox="0 0 110 130">
-    <rect width="110" height="130" fill="#f4f4f4"/>
-    <line x1="14" y1="4" x2="14" y2="126" stroke="#828282" stroke-width="4"/>
-    <circle cx="14" cy="4" r="4" fill="#d2af3c"/>
-    <path d="M14 18 L96 14 L84 40 L96 66 L14 62 Z" fill="#e30a17"/>
-    <circle cx="46" cy="40" r="14" fill="#fff"/>
-    <circle cx="51" cy="40" r="11" fill="#e30a17"/>
-    <polygon points="70,32 73,38 80,39 75,44 76,51 70,47 64,51 65,44 60,39 67,38" fill="#fff"/>
-  </svg>`;
-  img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
-}
-
-/* ======================= Sayaç / uyarılar ======================= */
-function tick(){
-  const now = new Date();
-  if(window._nextDate){
-    const remaining = Math.max(0, window._nextDate - now);
-    const hh = String(Math.floor(remaining/3600000)).padStart(2,'0');
-    const mm = String(Math.floor((remaining%3600000)/60000)).padStart(2,'0');
-    const ss = String(Math.floor((remaining%60000)/1000)).padStart(2,'0');
-    document.getElementById('next-countdown').textContent = `${hh}:${mm}:${ss}`;
-
+  async function loadTimes(force){
     const cfg = getConfig();
-    const reminderPoint = new Date(window._nextDate.getTime() - cfg.reminderMin*60000);
-    if(now >= reminderPoint && now < window._nextDate && !firedReminder.has(window._nextKey)){
-      firedReminder.add(window._nextKey);
-      notify(T('reminder_msg', I18N[LANG].prayers[window._nextKey], cfg.reminderMin));
-    }
-    if(now >= window._nextDate && !firedEzan.has(window._nextKey)){
-      firedEzan.add(window._nextKey);
-      const prayerLabel = I18N[LANG].prayers[window._nextKey];
-      notify(T('ezan_msg', prayerLabel));
-      playEzanSound();
-      showEzanOverlay(prayerLabel);
-      renderAll();
-    }
-  }
-  setTimeout(tick, 1000);
-}
-
-function notify(msg){
-  if(window.Notification && Notification.permission === 'granted'){
-    try{ new Notification('Ezan Vakti', {body: msg}); }catch(e){}
-  }
-  if(navigator.vibrate) navigator.vibrate([200,100,200]);
-}
-function playBeep(){
-  try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const o = ctx.createOscillator(); const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.value = 880; g.gain.value = 0.15;
-    o.start(); setTimeout(()=>{o.stop(); ctx.close();}, 700);
-  }catch(e){}
-}
-let activeEzanAudio = null;
-function playEzanSound(){
-  const soundData = localStorage.getItem('ezan_sound_data');
-  if(soundData){
+    document.getElementById('status').textContent = T('loading');
     try{
-      if(activeEzanAudio){ activeEzanAudio.pause(); }
-      activeEzanAudio = new Audio(soundData);
-      activeEzanAudio.play().catch(()=>{ playBeep(); });
-      return;
+      const records = await fetchTimes(cfg.ilce);
+      STATE.records = records;
+      STATE.offline = false;
+      localStorage.setItem('ezan_cache', JSON.stringify({ilce: cfg.ilce, records, ts: Date.now()}));
+      document.getElementById('status').textContent = T('updated') + new Date().toLocaleTimeString();
+    }catch(e){
+      STATE.offline = true;
+      const cache = JSON.parse(localStorage.getItem('ezan_cache') || 'null');
+      if(cache && cache.ilce == cfg.ilce){
+        STATE.records = cache.records;
+        document.getElementById('status').textContent = T('offline');
+      }else{
+        document.getElementById('status').textContent = T('update_error');
+      }
+    }
+    renderAll();
+    notifyAndroidBridge();
+  }
+
+  /* Android APK kabuğu içindeyse (WebView), native alarm/bildirim sistemini
+     güncel vakit listesi + ayarlarla besler. Tarayıcıda çalışırken
+     (AndroidBridge yoksa) hiçbir şey yapmaz, mevcut web bildirimi devam eder. */
+  function notifyAndroidBridge(){
+    if(window.AndroidBridge && STATE.records && STATE.records.length){
+      const cfg = getConfig();
+      try{
+        const mutedJson = JSON.stringify(Array.from(getMutedPrayers()));
+        window.AndroidBridge.scheduleAlarms(JSON.stringify(STATE.records), cfg.reminderMin, cfg.ilce, LANG, mutedJson);
+      }catch(e){ /* köprü yoksa veya hata olursa sessizce geç */ }
+    }
+  }
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function formatDateKey(date){
+    return `${pad2(date.getDate())}.${pad2(date.getMonth()+1)}.${date.getFullYear()}`;
+  }
+  function findRecordForDate(records, date){
+    const target = formatDateKey(date);
+    return records.find(r => (r.MiladiTarihKisa||'').trim() === target);
+  }
+
+  /* ======================= Render ======================= */
+  function loadFiredState(){
+    const today = new Date().toDateString();
+    try{
+      const raw = JSON.parse(localStorage.getItem('ezan_fired_state') || 'null');
+      if(raw && raw.date === today){
+        return {date: today, reminder: new Set(raw.reminder || []), ezan: new Set(raw.ezan || [])};
+      }
+    }catch(e){}
+    return {date: today, reminder: new Set(), ezan: new Set()};
+  }
+  function saveFiredState(){
+    localStorage.setItem('ezan_fired_state', JSON.stringify({
+      date: firedState.date,
+      reminder: Array.from(firedState.reminder),
+      ezan: Array.from(firedState.ezan),
+    }));
+  }
+  let firedState = loadFiredState();
+
+  function renderAll(){
+    const t = I18N[LANG];
+    document.getElementById('cat-din-title').textContent = t.cat_din;
+    document.getElementById('cat-tr-title').textContent = t.cat_tr;
+    document.getElementById('cat-at-title').textContent = t.cat_at;
+    document.getElementById('ayet-title').textContent = t.ayet;
+    document.getElementById('hadis-title').textContent = t.hadis;
+    document.getElementById('disclaimer-text').textContent = t.disclaimer;
+    document.getElementById('next-label').textContent = t.next_label;
+    document.getElementById('install-hint').textContent = t.install_hint;
+    document.getElementById('mute-hint-text').textContent = t.mute_hint;
+
+    const now = new Date();
+    document.getElementById('date-line').textContent =
+      formatDateKey(now) + ' - ' + t.weekdays[(now.getDay()+6)%7];
+
+    const todayKey = now.toDateString();
+    if(todayKey !== firedState.date){
+      firedState = {date: todayKey, reminder: new Set(), ezan: new Set()};
+      saveFiredState();
+    }
+
+    const today = findRecordForDate(STATE.records, now);
+    const tomorrow = findRecordForDate(STATE.records, new Date(now.getTime()+86400000));
+
+    const timesList = document.getElementById('times-list');
+    timesList.querySelectorAll('.row').forEach(r=>r.remove());
+    let nextKey=null, nextDate=null;
+    PRAYER_ORDER.forEach(key=>{
+      const row = document.createElement('div');
+      row.className='row';
+      const val = today ? (today[key]||'--:--') : '--:--';
+      const muted = isPrayerMuted(key);
+      row.innerHTML = `<span class="name">${t.prayers[key]}</span>
+        <span class="time-wrap">
+          <input type="checkbox" class="mute-checkbox" data-prayer="${key}" ${muted?'checked':''} title="${t.mute_title}">
+          <span class="time">${val}</span>
+        </span>`;
+      timesList.appendChild(row);
+      const muteCb = row.querySelector('.mute-checkbox');
+      muteCb.addEventListener('change', ()=>{ toggleMutePrayer(key, muteCb.checked); });
+      if(today && val !== '--:--'){
+        const [hh,mm] = val.split(':').map(Number);
+        const dt = new Date(now); dt.setHours(hh,mm,0,0);
+        if(dt > now && !nextDate){ nextKey=key; nextDate=dt; row.classList.add('active'); }
+      }
+    });
+    if(!nextDate && tomorrow && tomorrow.Imsak){
+      const [hh,mm] = tomorrow.Imsak.split(':').map(Number);
+      const dt = new Date(now.getTime()+86400000); dt.setHours(hh,mm,0,0);
+      nextKey='Imsak'; nextDate=dt;
+    }
+    document.getElementById('next-name').textContent = nextKey ? t.prayers[nextKey] : '-';
+    window._nextDate = nextDate; window._nextKey = nextKey;
+
+    if(today){
+      const hicri = today.HicriTarihKisa || '';
+      document.getElementById('hijri-line').textContent = t.hijri + ': ' + formatHijri(hicri, t);
+      const hy = parseHicriYear(hicri);
+      document.getElementById('prophet-line').innerHTML =
+        t.prophet_birth + '<br>' + t.prophet_death + '<br>' +
+        (hy ? t.prophet_years(hy - 11) : t.prophet_years('-'));
+    }
+
+    renderSpecialDays(now, today ? today : null);
+    renderDailyContent(now);
+  }
+
+  function parseHicriYear(hicriKisa){
+    const parts = (hicriKisa||'').trim().split('.');
+    if(parts.length===3) return parseInt(parts[2],10);
+    return null;
+  }
+  function formatHijri(hicriKisa, t){
+    const parts = (hicriKisa||'').trim().split('.');
+    if(parts.length!==3) return hicriKisa||'';
+    const gun=parseInt(parts[0],10), ay=parseInt(parts[1],10), yil=parts[2];
+    return `${gun} ${t.months[ay-1]||ay} ${yil}`;
+  }
+
+  function renderSpecialDays(now, todayRec){
+    const t = I18N[LANG];
+    let dinLines = [];
+    for(const rec of STATE.records){
+      const hicri = rec.HicriTarihKisa; if(!hicri) continue;
+      const parts = hicri.trim().split('.'); if(parts.length!==3) continue;
+      const gun=parseInt(parts[0],10), ay=parseInt(parts[1],10);
+      const mdate = parseMiladi(rec.MiladiTarihKisa);
+      if(!mdate || mdate < stripTime(now)) continue;
+      const daysDiff = Math.round((mdate-stripTime(now))/86400000);
+      if(daysDiff>45) break;
+      const key = DIN_FIXED[`${ay}-${gun}`];
+      if(key) dinLines.push({date:mdate, text: DIN_NAMES[LANG][key], days:daysDiff});
+      if(ay===7 && mdate.getDay()===4 && !dinLines.some(d=>d._regaib)){
+        dinLines.push({date:mdate, text: LANG==='tr'?'Regaib Kandili':'Raghaib-Nacht', days:daysDiff, _regaib:true});
+      }
+    }
+    dinLines.sort((a,b)=>a.date-b.date);
+    renderCategoryBody('cat-din-body', dinLines.slice(0,3), t);
+
+    renderFixedCategory('cat-tr-body', TR_FIXED, now, t);
+    renderFixedCategory('cat-at-body', AT_FIXED, now, t);
+  }
+  function stripTime(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
+  function parseMiladi(s){
+    if(!s) return null;
+    const [d,m,y] = s.trim().split('.').map(Number);
+    if(!d||!m||!y) return null;
+    return new Date(y,m-1,d);
+  }
+  function renderCategoryBody(elId, items, t){
+    const el = document.getElementById(elId);
+    if(!items.length){ el.textContent = t.no_upcoming; return; }
+    el.textContent = items.map(it=> it.days===0 ? `• ${it.text} (${t.today})` : `• ${it.text} - ${it.days} ${t.days_left}`).join('\n');
+  }
+  function renderFixedCategory(elId, fixedMap, now, t){
+    const today0 = stripTime(now);
+    let items = [];
+    for(const key in fixedMap){
+      const [m,d] = key.split('-').map(Number);
+      let year = now.getFullYear();
+      let occ = new Date(year, m-1, d);
+      if(occ < today0) occ = new Date(year+1, m-1, d);
+      const days = Math.round((occ-today0)/86400000);
+      if(days<=60){
+        const label = fixedMap[key].split('|');
+        items.push({date:occ, text: LANG==='tr'?label[0]:label[1], days});
+      }
+    }
+    items.sort((a,b)=>a.date-b.date);
+    renderCategoryBody(elId, items.slice(0,3), t);
+  }
+
+  function renderDailyContent(now){
+    const t = I18N[LANG];
+    const dayOfYear = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
+    const ayet = AYETLER[dayOfYear % AYETLER.length];
+    const hadis = HADISLER[dayOfYear % HADISLER.length];
+    document.getElementById('ayet-text').textContent = '\u201c'+(LANG==='tr'?ayet.tr:ayet.de)+'\u201d';
+    document.getElementById('ayet-source').textContent = t.source+': '+(LANG==='tr'?ayet.k_tr:ayet.k_de);
+    document.getElementById('hadis-text').textContent = '\u201c'+(LANG==='tr'?hadis.tr:hadis.de)+'\u201d';
+    document.getElementById('hadis-source').textContent = t.source+': '+(LANG==='tr'?hadis.k_tr:hadis.k_de);
+  }
+
+  /* ======================= Panel resmi ======================= */
+  function initPanel(){
+    const img = document.getElementById('panel-img');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="110" height="130" viewBox="0 0 110 130">
+      <rect width="110" height="130" fill="#f4f4f4"/>
+      <line x1="14" y1="4" x2="14" y2="126" stroke="#828282" stroke-width="4"/>
+      <circle cx="14" cy="4" r="4" fill="#d2af3c"/>
+      <path d="M14 18 L96 14 L84 40 L96 66 L14 62 Z" fill="#e30a17"/>
+      <circle cx="46" cy="40" r="14" fill="#fff"/>
+      <circle cx="51" cy="40" r="11" fill="#e30a17"/>
+      <polygon points="70,32 73,38 80,39 75,44 76,51 70,47 64,51 65,44 60,39 67,38" fill="#fff"/>
+    </svg>`;
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
+  }
+
+  /* ======================= Sayaç / uyarılar ======================= */
+  function tick(){
+    const now = new Date();
+    if(window._nextDate){
+      const remaining = Math.max(0, window._nextDate - now);
+      const hh = String(Math.floor(remaining/3600000)).padStart(2,'0');
+      const mm = String(Math.floor((remaining%3600000)/60000)).padStart(2,'0');
+      const ss = String(Math.floor((remaining%60000)/1000)).padStart(2,'0');
+      document.getElementById('next-countdown').textContent = `${hh}:${mm}:${ss}`;
+
+      const cfg = getConfig();
+      const reminderPoint = new Date(window._nextDate.getTime() - cfg.reminderMin*60000);
+      if(now >= reminderPoint && now < window._nextDate && !firedState.reminder.has(window._nextKey)){
+        firedState.reminder.add(window._nextKey); saveFiredState();
+        notify(T('reminder_msg', I18N[LANG].prayers[window._nextKey], cfg.reminderMin));
+      }
+      if(now >= window._nextDate && !firedState.ezan.has(window._nextKey)){
+        firedState.ezan.add(window._nextKey); saveFiredState();
+        const prayerLabel = I18N[LANG].prayers[window._nextKey];
+        notify(T('ezan_msg', prayerLabel));
+        if(!isPrayerMuted(window._nextKey)){
+          playEzanSound();
+        }
+        showEzanOverlay(prayerLabel);
+        renderAll();
+      }
+    }
+    setTimeout(tick, 1000);
+  }
+
+  function notify(msg){
+    if(window.Notification && Notification.permission === 'granted'){
+      try{ new Notification('Ezan Vakti', {body: msg}); }catch(e){}
+    }
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+  }
+  function playBeep(){
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880; g.gain.value = 0.15;
+      o.start(); setTimeout(()=>{o.stop(); ctx.close();}, 700);
     }catch(e){}
   }
-  playBeep();
-}
-function stopEzanSound(){
-  if(activeEzanAudio){ try{ activeEzanAudio.pause(); activeEzanAudio.currentTime = 0; }catch(e){} }
-}
-let ezanOverlayAutoCloseTimer = null;
-function showEzanOverlay(prayerLabel){
-  const t = I18N[LANG];
-  document.getElementById('ezan-overlay-title').textContent = '🕌 ' + prayerLabel;
-  document.getElementById('ezan-overlay-msg').textContent = T('ezan_msg', prayerLabel);
-  document.getElementById('ezan-overlay-close-btn').textContent = t.ezan_overlay_close;
-
-  const duaEnabled = localStorage.getItem('ezan_dua_enabled') !== 'false';
-  const duaBox = document.getElementById('ezan-overlay-dua-box');
-  if(duaEnabled){
-    duaBox.style.display = 'block';
-    document.getElementById('ezan-overlay-dua-title').textContent = t.ezan_dua_title;
-    document.getElementById('ezan-overlay-arabic').textContent = EZAN_DUASI.arabic;
-    document.getElementById('ezan-overlay-trans').textContent = LANG==='tr' ? EZAN_DUASI.tr : EZAN_DUASI.de;
-    document.getElementById('ezan-overlay-source').textContent = t.source + ': ' + (LANG==='tr'?EZAN_DUASI.k_tr:EZAN_DUASI.k_de);
-  }else{
-    duaBox.style.display = 'none';
+  let activeEzanAudio = null;
+  function playEzanSound(){
+    const soundData = localStorage.getItem('ezan_sound_data');
+    if(soundData){
+      try{
+        if(activeEzanAudio){ activeEzanAudio.pause(); }
+        activeEzanAudio = new Audio(soundData);
+        activeEzanAudio.play().catch(()=>{ playBeep(); });
+        return;
+      }catch(e){}
+    }
+    playBeep();
   }
-  openModal('ezan-overlay');
-
-  // 30 saniye sonra otomatik kapanır (kullanıcı daha önce elle kapatırsa
-  // bu zamanlayıcı zaten iptal edilir - aşağıdaki close-btn dinleyicisine bak).
-  if(ezanOverlayAutoCloseTimer) clearTimeout(ezanOverlayAutoCloseTimer);
-  ezanOverlayAutoCloseTimer = setTimeout(()=>{
-    closeModal('ezan-overlay');
-    stopEzanSound();
-  }, 30000);
-}
-// "Sustur / Kapat" butonuna basınca sesi de durdur ve otomatik kapanma
-// zamanlayıcısını iptal et (zaten kapandığı için tekrar tetiklenmesin).
-document.getElementById('ezan-overlay-close-btn').addEventListener('click', ()=>{
-  stopEzanSound();
-  if(ezanOverlayAutoCloseTimer){ clearTimeout(ezanOverlayAutoCloseTimer); ezanOverlayAutoCloseTimer=null; }
-});
-
-/* ======================= Kıble Pusulası ======================= */
-const KAABA_LAT=21.4225, KAABA_LON=39.8262;
-function computeBearing(lat1,lon1,lat2,lon2){
-  const toRad = d=>d*Math.PI/180, toDeg = r=>r*180/Math.PI;
-  const phi1=toRad(lat1), phi2=toRad(lat2), dl=toRad(lon2-lon1);
-  const x = Math.sin(dl)*Math.cos(phi2);
-  const y = Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(dl);
-  return (toDeg(Math.atan2(x,y))+360)%360;
-}
-function distanceKm(lat1,lon1,lat2,lon2){
-  const toRad = d=>d*Math.PI/180, R=6371;
-  const dphi=toRad(lat2-lat1), dl=toRad(lon2-lon1);
-  const a = Math.sin(dphi/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dl/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-function compassLabel(bearing){
-  const dirsTr=["Kuzey","Kuzeydoğu","Doğu","Güneydoğu","Güney","Güneybatı","Batı","Kuzeybatı"];
-  const dirsDe=["Norden","Nordosten","Osten","Südosten","Süden","Südwesten","Westen","Nordwesten"];
-  const dirs = LANG==='tr'?dirsTr:dirsDe;
-  return dirs[Math.floor((bearing+22.5)/45)%8];
-}
-let qiblaBearing=0, deviceHeading=null, compassActive=false, smoothedHeading=null;
-let drawScheduled=false;
-
-function shortestAngleDiff(from, to){
-  return ((to - from + 540) % 360) - 180;
-}
-
-function drawCompass(){
-  const canvas = document.getElementById('compass-canvas');
-  const ctx = canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height, cx=W/2, cy=H/2, r=W*0.42;
-  ctx.clearRect(0,0,W,H);
-  ctx.save();
-  const rotation = compassActive && deviceHeading!==null ? -deviceHeading : 0;
-  ctx.translate(cx,cy); ctx.rotate(rotation*Math.PI/180); ctx.translate(-cx,-cy);
-
-  ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.fillStyle="#faf9f8"; ctx.fill();
-  ctx.lineWidth=2; ctx.strokeStyle="#3c3c3c"; ctx.stroke();
-  ctx.font="bold 16px sans-serif"; ctx.fillStyle="#282828"; ctx.textAlign="center"; ctx.textBaseline="middle";
-  const labels = LANG==='tr' ? {0:'K',90:'D',180:'G',270:'B'} : {0:'N',90:'O',180:'S',270:'W'};
-  for(const deg in labels){
-    const rad = deg*Math.PI/180;
-    ctx.fillText(labels[deg], cx + r*0.86*Math.sin(rad), cy - r*0.86*Math.cos(rad));
+  function stopEzanSound(){
+    if(activeEzanAudio){ try{ activeEzanAudio.pause(); activeEzanAudio.currentTime = 0; }catch(e){} }
   }
-  ctx.strokeStyle="#787878"; ctx.lineWidth=1;
-  for(let deg=0; deg<360; deg+=15){
-    const rad = deg*Math.PI/180;
-    const outer = r*0.98, inner = r*(deg%90!==0?0.90:0.82);
-    ctx.beginPath();
-    ctx.moveTo(cx+outer*Math.sin(rad), cy-outer*Math.cos(rad));
-    ctx.lineTo(cx+inner*Math.sin(rad), cy-inner*Math.cos(rad));
-    ctx.stroke();
-  }
-  const rad = qiblaBearing*Math.PI/180;
-  const tipX = cx + r*0.80*Math.sin(rad), tipY = cy - r*0.80*Math.cos(rad);
-  const b1 = ((qiblaBearing+150)*Math.PI/180), b2=((qiblaBearing-150)*Math.PI/180);
-  ctx.beginPath();
-  ctx.moveTo(tipX,tipY);
-  ctx.lineTo(cx+r*0.16*Math.sin(b1), cy-r*0.16*Math.cos(b1));
-  ctx.lineTo(cx+r*0.16*Math.sin(b2), cy-r*0.16*Math.cos(b2));
-  ctx.closePath(); ctx.fillStyle="#c71e28"; ctx.fill();
-  ctx.beginPath(); ctx.arc(cx,cy,W*0.02,0,7); ctx.fillStyle="#1e1e1e"; ctx.fill();
-  ctx.restore();
-}
+  let ezanOverlayAutoCloseTimer = null;
+  function showEzanOverlay(prayerLabel){
+    const t = I18N[LANG];
+    document.getElementById('ezan-overlay-title').textContent = '🕌 ' + prayerLabel;
+    document.getElementById('ezan-overlay-msg').textContent = T('ezan_msg', prayerLabel);
+    document.getElementById('ezan-overlay-close-btn').textContent = t.ezan_overlay_close;
 
-function updateQiblaInfo(){
-  const cfg = getConfig();
-  qiblaBearing = computeBearing(cfg.lat, cfg.lon, KAABA_LAT, KAABA_LON);
-  const km = Math.round(distanceKm(cfg.lat, cfg.lon, KAABA_LAT, KAABA_LON));
-  document.getElementById('qibla-bearing-info').textContent = T('qibla_bearing', qiblaBearing.toFixed(1), compassLabel(qiblaBearing));
-  document.getElementById('qibla-distance-info').textContent = T('qibla_distance', km);
-  document.getElementById('qibla-note-text').textContent = compassActive ? T('qibla_note_on') : T('qibla_note_off');
-  document.getElementById('qibla-modal-title').textContent = T('qibla_title');
-  document.getElementById('compass-perm-btn').textContent = T('compass_perm');
-  drawCompass();
-}
-
-function handleOrientation(e){
-  let heading = null;
-  if(e.webkitCompassHeading !== undefined){ heading = e.webkitCompassHeading; }
-  else if(e.absolute && e.alpha !== null){ heading = 360 - e.alpha; }
-  else if(e.alpha !== null){ heading = 360 - e.alpha; }
-  if(heading !== null){
-    // Ham sensör verisi çok "gürültülü" (küçük titremeler bile okumayı
-    // sıçratıyor) - bu yüzden yumuşatma (exponential smoothing) uyguluyoruz;
-    // 0/360 sınırında da doğru yönde (en kısa yoldan) dönmesi için açı
-    // farkını dairesel olarak hesaplıyoruz.
-    if(smoothedHeading === null){
-      smoothedHeading = heading;
+    const duaEnabled = localStorage.getItem('ezan_dua_enabled') !== 'false';
+    const duaBox = document.getElementById('ezan-overlay-dua-box');
+    if(duaEnabled){
+      duaBox.style.display = 'block';
+      document.getElementById('ezan-overlay-dua-title').textContent = t.ezan_dua_title;
+      document.getElementById('ezan-overlay-arabic').textContent = EZAN_DUASI.arabic;
+      document.getElementById('ezan-overlay-trans').textContent = LANG==='tr' ? EZAN_DUASI.tr : EZAN_DUASI.de;
+      document.getElementById('ezan-overlay-source').textContent = t.source + ': ' + (LANG==='tr'?EZAN_DUASI.k_tr:EZAN_DUASI.k_de);
     }else{
-      const diff = shortestAngleDiff(smoothedHeading, heading);
-      smoothedHeading = (smoothedHeading + diff * 0.12 + 360) % 360;
+      duaBox.style.display = 'none';
     }
-    deviceHeading = smoothedHeading; compassActive = true;
-    // Her sensör olayında değil, ekran her kare yenilendiğinde çiz -
-    // gereksiz/aşırı sık yeniden çizimi (ve görsel titremeyi) önler.
-    if(!drawScheduled){
-      drawScheduled = true;
-      requestAnimationFrame(()=>{ drawScheduled=false; updateQiblaInfo(); });
+    openModal('ezan-overlay');
+
+    if(ezanOverlayAutoCloseTimer) clearTimeout(ezanOverlayAutoCloseTimer);
+    ezanOverlayAutoCloseTimer = setTimeout(()=>{
+      closeModal('ezan-overlay');
+      stopEzanSound();
+    }, 30000);
+  }
+  document.getElementById('ezan-overlay-close-btn').addEventListener('click', ()=>{
+    stopEzanSound();
+    if(ezanOverlayAutoCloseTimer){ clearTimeout(ezanOverlayAutoCloseTimer); ezanOverlayAutoCloseTimer=null; }
+  });
+
+  /* ======================= Kıble Pusulası ======================= */
+  const KAABA_LAT=21.4225, KAABA_LON=39.8262;
+  function computeBearing(lat1,lon1,lat2,lon2){
+    const toRad = d=>d*Math.PI/180, toDeg = r=>r*180/Math.PI;
+    const phi1=toRad(lat1), phi2=toRad(lat2), dl=toRad(lon2-lon1);
+    const x = Math.sin(dl)*Math.cos(phi2);
+    const y = Math.cos(phi1)*Math.sin(phi2) - Math.sin(phi1)*Math.cos(phi2)*Math.cos(dl);
+    return (toDeg(Math.atan2(x,y))+360)%360;
+  }
+  function distanceKm(lat1,lon1,lat2,lon2){
+    const toRad = d=>d*Math.PI/180, R=6371;
+    const dphi=toRad(lat2-lat1), dl=toRad(lon2-lon1);
+    const a = Math.sin(dphi/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dl/2)**2;
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  }
+  function compassLabel(bearing){
+    const dirsTr=["Kuzey","Kuzeydoğu","Doğu","Güneydoğu","Güney","Güneybatı","Batı","Kuzeybatı"];
+    const dirsDe=["Norden","Nordosten","Osten","Südosten","Süden","Südwesten","Westen","Nordwesten"];
+    const dirs = LANG==='tr'?dirsTr:dirsDe;
+    return dirs[Math.floor((bearing+22.5)/45)%8];
+  }
+  let qiblaBearing=0, deviceHeading=null, compassActive=false, smoothedHeading=null;
+  let drawScheduled=false;
+
+  function shortestAngleDiff(from, to){
+    return ((to - from + 540) % 360) - 180;
+  }
+
+  function drawCompass(){
+    const canvas = document.getElementById('compass-canvas');
+    const ctx = canvas.getContext('2d');
+    const W=canvas.width, H=canvas.height, cx=W/2, cy=H/2, r=W*0.42;
+    ctx.clearRect(0,0,W,H);
+    ctx.save();
+    const rotation = compassActive && deviceHeading!==null ? -deviceHeading : 0;
+    ctx.translate(cx,cy); ctx.rotate(rotation*Math.PI/180); ctx.translate(-cx,-cy);
+
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.fillStyle="#faf9f8"; ctx.fill();
+    ctx.lineWidth=2; ctx.strokeStyle="#3c3c3c"; ctx.stroke();
+    ctx.font="bold 16px sans-serif"; ctx.fillStyle="#282828"; ctx.textAlign="center"; ctx.textBaseline="middle";
+    const labels = LANG==='tr' ? {0:'K',90:'D',180:'G',270:'B'} : {0:'N',90:'O',180:'S',270:'W'};
+    for(const deg in labels){
+      const rad = deg*Math.PI/180;
+      ctx.fillText(labels[deg], cx + r*0.86*Math.sin(rad), cy - r*0.86*Math.cos(rad));
+    }
+    ctx.strokeStyle="#787878"; ctx.lineWidth=1;
+    for(let deg=0; deg<360; deg+=15){
+      const rad = deg*Math.PI/180;
+      const outer = r*0.98, inner = r*(deg%90!==0?0.90:0.82);
+      ctx.beginPath();
+      ctx.moveTo(cx+outer*Math.sin(rad), cy-outer*Math.cos(rad));
+      ctx.lineTo(cx+inner*Math.sin(rad), cy-inner*Math.cos(rad));
+      ctx.stroke();
+    }
+    const rad = qiblaBearing*Math.PI/180;
+    const tipX = cx + r*0.80*Math.sin(rad), tipY = cy - r*0.80*Math.cos(rad);
+    const b1 = ((qiblaBearing+150)*Math.PI/180), b2=((qiblaBearing-150)*Math.PI/180);
+    ctx.beginPath();
+    ctx.moveTo(tipX,tipY);
+    ctx.lineTo(cx+r*0.16*Math.sin(b1), cy-r*0.16*Math.cos(b1));
+    ctx.lineTo(cx+r*0.16*Math.sin(b2), cy-r*0.16*Math.cos(b2));
+    ctx.closePath(); ctx.fillStyle="#c71e28"; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,cy,W*0.02,0,7); ctx.fillStyle="#1e1e1e"; ctx.fill();
+    ctx.restore();
+  }
+
+  function updateQiblaInfo(){
+    const cfg = getConfig();
+    qiblaBearing = computeBearing(cfg.lat, cfg.lon, KAABA_LAT, KAABA_LON);
+    const km = Math.round(distanceKm(cfg.lat, cfg.lon, KAABA_LAT, KAABA_LON));
+    document.getElementById('qibla-bearing-info').textContent = T('qibla_bearing', qiblaBearing.toFixed(1), compassLabel(qiblaBearing));
+    document.getElementById('qibla-distance-info').textContent = T('qibla_distance', km);
+    document.getElementById('qibla-note-text').textContent = compassActive ? T('qibla_note_on') : T('qibla_note_off');
+    document.getElementById('qibla-modal-title').textContent = T('qibla_title');
+    document.getElementById('compass-perm-btn').textContent = T('compass_perm');
+    drawCompass();
+  }
+
+  function handleOrientation(e){
+    let heading = null;
+    if(e.webkitCompassHeading !== undefined){ heading = e.webkitCompassHeading; }
+    else if(e.absolute && e.alpha !== null){ heading = 360 - e.alpha; }
+    else if(e.alpha !== null){ heading = 360 - e.alpha; }
+    if(heading !== null){
+      if(smoothedHeading === null){
+        smoothedHeading = heading;
+      }else{
+        const diff = shortestAngleDiff(smoothedHeading, heading);
+        smoothedHeading = (smoothedHeading + diff * 0.12 + 360) % 360;
+      }
+      deviceHeading = smoothedHeading; compassActive = true;
+      if(!drawScheduled){
+        drawScheduled = true;
+        requestAnimationFrame(()=>{ drawScheduled=false; updateQiblaInfo(); });
+      }
     }
   }
-}
 
-document.getElementById('compass-perm-btn').addEventListener('click', async ()=>{
-  try{
-    if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
-      const perm = await DeviceOrientationEvent.requestPermission();
-      if(perm === 'granted'){
+  document.getElementById('compass-perm-btn').addEventListener('click', async ()=>{
+    try{
+      if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+        const perm = await DeviceOrientationEvent.requestPermission();
+        if(perm === 'granted'){
+          window.addEventListener('deviceorientation', handleOrientation, true);
+        }else{
+          alert(T('compass_denied'));
+        }
+      }else if(window.DeviceOrientationEvent){
+        window.addEventListener('deviceorientationabsolute', handleOrientation, true);
         window.addEventListener('deviceorientation', handleOrientation, true);
       }else{
         alert(T('compass_denied'));
       }
-    }else if(window.DeviceOrientationEvent){
-      window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-      window.addEventListener('deviceorientation', handleOrientation, true);
-    }else{
-      alert(T('compass_denied'));
-    }
-  }catch(e){ alert(T('compass_denied')); }
-});
+    }catch(e){ alert(T('compass_denied')); }
+  });
 
-/* ======================= Ayarlar / Modal ======================= */
-function getConfig(){
-  return {
-    ilce: parseInt(localStorage.getItem('ezan_ilce')||'11613',10),
-    reminderMin: parseInt(localStorage.getItem('ezan_reminder')||'10',10),
-    lat: parseFloat(localStorage.getItem('ezan_lat')||'47.2333'),
-    lon: parseFloat(localStorage.getItem('ezan_lon')||'9.6667'),
-  };
-}
-function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-
-document.getElementById('qibla-open-btn').addEventListener('click', ()=>{
-  updateQiblaInfo(); openModal('qibla-overlay');
-});
-document.getElementById('settings-open-btn').addEventListener('click', ()=>{
-  const cfg = getConfig();
-  document.getElementById('ilce-input').value = cfg.ilce;
-  document.getElementById('reminder-input').value = cfg.reminderMin;
-  document.getElementById('lat-input').value = cfg.lat;
-  document.getElementById('lon-input').value = cfg.lon;
-  document.getElementById('ezan-dua-checkbox').checked = localStorage.getItem('ezan_dua_enabled') !== 'false';
-  refreshSettingsTexts();
-  refreshFileStatuses();
-  openModal('settings-overlay');
-});
-function refreshSettingsTexts(){
-  const t = I18N[LANG];
-  document.getElementById('settings-modal-title').textContent = t.settings_title;
-  document.getElementById('lang-label').textContent = t.lang;
-  document.getElementById('ilce-label').textContent = t.ilce;
-  document.getElementById('reminder-label').textContent = t.reminder;
-  document.getElementById('lat-label').textContent = t.lat;
-  document.getElementById('lon-label').textContent = t.lon;
-  document.getElementById('notif-perm-btn').textContent = t.notif_btn;
-  document.getElementById('lang-tr-btn').classList.toggle('active', LANG==='tr');
-  document.getElementById('lang-de-btn').classList.toggle('active', LANG==='de');
-  document.getElementById('ezan-dua-section-title').textContent = t.ezan_dua_title;
-  document.getElementById('ezan-dua-label').textContent = t.ezan_dua_setting;
-  document.getElementById('ezan-sound-section-title').textContent = t.ezan_sound_title;
-  document.getElementById('ezan-sound-choose-label').firstChild.textContent = t.ezan_sound_choose;
-  document.getElementById('ezan-sound-clear-btn').textContent = t.ezan_sound_clear;
-  document.getElementById('panel-section-title').textContent = t.panel_title;
-  document.getElementById('panel-choose-label').firstChild.textContent = t.panel_choose;
-  document.getElementById('panel-reset-btn').textContent = t.panel_reset;
-  const notifNote = document.getElementById('notif-note');
-  if(window.Notification){
-    notifNote.textContent = Notification.permission === 'granted' ? t.notif_on : t.notif_off;
+  /* ======================= Vakit bazlı ezan sesi kapatma ======================= */
+  function getMutedPrayers(){
+    try{ return new Set(JSON.parse(localStorage.getItem('ezan_muted_prayers') || '[]')); }
+    catch(e){ return new Set(); }
   }
-  refreshFileStatuses();
-}
-function refreshFileStatuses(){
-  const t = I18N[LANG];
-  const soundData = localStorage.getItem('ezan_sound_data');
-  const soundName = localStorage.getItem('ezan_sound_name');
-  document.getElementById('ezan-sound-status').textContent =
-    soundData ? (t.ezan_sound_current + (soundName||'')) : t.ezan_sound_none;
-}
-function setLang(l){
-  LANG = l; localStorage.setItem('ezan_lang', l);
-  refreshSettingsTexts(); renderAll();
-}
-
-/* -- Dosya yükleme: ezan sesi -- */
-document.getElementById('ezan-sound-file').addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  if(file.size > 4*1024*1024){ alert(T('file_too_big')); e.target.value=''; return; }
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    try{
-      localStorage.setItem('ezan_sound_data', reader.result);
-      localStorage.setItem('ezan_sound_name', file.name);
-      refreshFileStatuses();
-    }catch(err){ alert(T('file_too_big')); }
-  };
-  reader.readAsDataURL(file);
-});
-document.getElementById('ezan-sound-clear-btn').addEventListener('click', ()=>{
-  localStorage.removeItem('ezan_sound_data');
-  localStorage.removeItem('ezan_sound_name');
-  refreshFileStatuses();
-});
-
-/* -- Dosya yükleme: pano resmi -- */
-document.getElementById('panel-file').addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  if(file.size > 4*1024*1024){ alert(T('file_too_big')); e.target.value=''; return; }
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    try{
-      localStorage.setItem('ezan_panel_data', reader.result);
-      applyPanelImage();
-    }catch(err){ alert(T('file_too_big')); }
-  };
-  reader.readAsDataURL(file);
-});
-document.getElementById('panel-reset-btn').addEventListener('click', ()=>{
-  localStorage.removeItem('ezan_panel_data');
-  applyPanelImage();
-});
-function applyPanelImage(){
-  const custom = localStorage.getItem('ezan_panel_data');
-  if(custom){
-    document.getElementById('panel-img').src = custom;
-  }else{
-    initPanel();
+  function isPrayerMuted(key){ return getMutedPrayers().has(key); }
+  function toggleMutePrayer(key, muted){
+    const set = getMutedPrayers();
+    if(muted){ set.add(key); } else { set.delete(key); }
+    localStorage.setItem('ezan_muted_prayers', JSON.stringify(Array.from(set)));
+    notifyAndroidBridge();
   }
-}
 
-function saveSettings(){
-  const newIlce = parseInt(document.getElementById('ilce-input').value,10) || 11613;
-  const oldIlce = getConfig().ilce;
-  localStorage.setItem('ezan_ilce', newIlce);
-  localStorage.setItem('ezan_reminder', document.getElementById('reminder-input').value || '10');
-  localStorage.setItem('ezan_lat', document.getElementById('lat-input').value || '47.2333');
-  localStorage.setItem('ezan_lon', document.getElementById('lon-input').value || '9.6667');
-  localStorage.setItem('ezan_dua_enabled', document.getElementById('ezan-dua-checkbox').checked ? 'true' : 'false');
-  closeModal('settings-overlay');
-  if(newIlce !== oldIlce){ loadTimes(true); } else { renderAll(); }
-}
-document.getElementById('notif-perm-btn').addEventListener('click', async ()=>{
-  if(window.Notification){
-    await Notification.requestPermission();
+  /* ======================= Ayarlar / Modal ======================= */
+  function getConfig(){
+    return {
+      ilce: parseInt(localStorage.getItem('ezan_ilce')||'11613',10),
+      reminderMin: parseInt(localStorage.getItem('ezan_reminder')||'10',10),
+      lat: parseFloat(localStorage.getItem('ezan_lat')||'47.2333'),
+      lon: parseFloat(localStorage.getItem('ezan_lon')||'9.6667'),
+    };
+  }
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+  // Koyu arka plana (modal dışına) tıklanınca da kapansın - buton her nasılsa
+  // görünüm dışında kalsa bile pencereyi kapatmanın her zaman bir yolu olsun.
+  document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+    overlay.addEventListener('click', (e)=>{
+      if(e.target === overlay){
+        if(overlay.id === 'ezan-overlay'){ stopEzanSound(); if(ezanOverlayAutoCloseTimer){ clearTimeout(ezanOverlayAutoCloseTimer); ezanOverlayAutoCloseTimer=null; } }
+        overlay.classList.remove('open');
+      }
+    });
+  });
+
+  document.getElementById('qibla-open-btn').addEventListener('click', ()=>{
+    updateQiblaInfo(); openModal('qibla-overlay');
+  });
+  document.getElementById('about-open-btn').addEventListener('click', ()=>{
+    openModal('about-overlay');
+  });
+  document.getElementById('settings-open-btn').addEventListener('click', ()=>{
+    const cfg = getConfig();
+    document.getElementById('ilce-input').value = cfg.ilce;
+    document.getElementById('reminder-input').value = cfg.reminderMin;
+    document.getElementById('lat-input').value = cfg.lat;
+    document.getElementById('lon-input').value = cfg.lon;
+    document.getElementById('ezan-dua-checkbox').checked = localStorage.getItem('ezan_dua_enabled') !== 'false';
     refreshSettingsTexts();
+    refreshFileStatuses();
+    openModal('settings-overlay');
+  });
+  function refreshSettingsTexts(){
+    const t = I18N[LANG];
+    document.getElementById('settings-modal-title').textContent = t.settings_title;
+    document.getElementById('lang-label').textContent = t.lang;
+    document.getElementById('ilce-label').textContent = t.ilce;
+    document.getElementById('reminder-label').textContent = t.reminder;
+    document.getElementById('lat-label').textContent = t.lat;
+    document.getElementById('lon-label').textContent = t.lon;
+    document.getElementById('notif-perm-btn').textContent = t.notif_btn;
+    document.getElementById('lang-tr-btn').classList.toggle('active', LANG==='tr');
+    document.getElementById('lang-de-btn').classList.toggle('active', LANG==='de');
+    document.getElementById('ezan-dua-section-title').textContent = t.ezan_dua_title;
+    document.getElementById('ezan-dua-label').textContent = t.ezan_dua_setting;
+    document.getElementById('ezan-sound-section-title').textContent = t.ezan_sound_title;
+    document.getElementById('ezan-sound-choose-label').firstChild.textContent = t.ezan_sound_choose;
+    document.getElementById('ezan-sound-clear-btn').textContent = t.ezan_sound_clear;
+    document.getElementById('panel-section-title').textContent = t.panel_title;
+    document.getElementById('panel-choose-label').firstChild.textContent = t.panel_choose;
+    document.getElementById('panel-reset-btn').textContent = t.panel_reset;
+    const notifNote = document.getElementById('notif-note');
+    if(window.Notification){
+      notifNote.textContent = Notification.permission === 'granted' ? t.notif_on : t.notif_off;
+    }
+    refreshFileStatuses();
   }
-});
+  function refreshFileStatuses(){
+    const t = I18N[LANG];
+    const soundData = localStorage.getItem('ezan_sound_data');
+    const soundName = localStorage.getItem('ezan_sound_name');
+    document.getElementById('ezan-sound-status').textContent =
+      soundData ? (t.ezan_sound_current + (soundName||'')) : t.ezan_sound_none;
+  }
+  function setLang(l){
+    LANG = l; localStorage.setItem('ezan_lang', l);
+    refreshSettingsTexts(); renderAll();
+  }
 
-/* ======================= Başlangıç ======================= */
-applyPanelImage();
-loadTimes();
-tick();
-refreshSettingsTexts();
-setInterval(()=>loadTimes(false), 1000*60*60*6);
+  /* -- Dosya yükleme: ezan sesi -- */
+  document.getElementById('ezan-sound-file').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 4*1024*1024){ alert(T('file_too_big')); e.target.value=''; return; }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        localStorage.setItem('ezan_sound_data', reader.result);
+        localStorage.setItem('ezan_sound_name', file.name);
+        refreshFileStatuses();
+      }catch(err){ alert(T('file_too_big')); }
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('ezan-sound-clear-btn').addEventListener('click', ()=>{
+    localStorage.removeItem('ezan_sound_data');
+    localStorage.removeItem('ezan_sound_name');
+    refreshFileStatuses();
+  });
+
+  /* -- Dosya yükleme: pano resmi -- */
+  document.getElementById('panel-file').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 4*1024*1024){ alert(T('file_too_big')); e.target.value=''; return; }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        localStorage.setItem('ezan_panel_data', reader.result);
+        applyPanelImage();
+      }catch(err){ alert(T('file_too_big')); }
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('panel-reset-btn').addEventListener('click', ()=>{
+    localStorage.removeItem('ezan_panel_data');
+    applyPanelImage();
+  });
+  function applyPanelImage(){
+    const custom = localStorage.getItem('ezan_panel_data');
+    if(custom){
+      document.getElementById('panel-img').src = custom;
+    }else{
+      initPanel();
+    }
+  }
+
+  function saveSettings(){
+    const newIlce = parseInt(document.getElementById('ilce-input').value,10) || 11613;
+    const oldIlce = getConfig().ilce;
+    localStorage.setItem('ezan_ilce', newIlce);
+    localStorage.setItem('ezan_reminder', document.getElementById('reminder-input').value || '10');
+    localStorage.setItem('ezan_lat', document.getElementById('lat-input').value || '47.2333');
+    localStorage.setItem('ezan_lon', document.getElementById('lon-input').value || '9.6667');
+    localStorage.setItem('ezan_dua_enabled', document.getElementById('ezan-dua-checkbox').checked ? 'true' : 'false');
+    closeModal('settings-overlay');
+    if(newIlce !== oldIlce){ loadTimes(true); } else { renderAll(); notifyAndroidBridge(); }
+  }
+  document.getElementById('notif-perm-btn').addEventListener('click', async ()=>{
+    if(window.AndroidBridge){
+      try{ window.AndroidBridge.requestNotificationPermission(); }catch(e){}
+    }
+    if(window.Notification){
+      await Notification.requestPermission();
+      refreshSettingsTexts();
+    }
+  });
+
+  /* ======================= Başlangıç ======================= */
+  applyPanelImage();
+  loadTimes();
+  tick();
+  refreshSettingsTexts();
+  setInterval(()=>loadTimes(false), 1000*60*60*6);
 </script>
 </body>
 </html>
+
